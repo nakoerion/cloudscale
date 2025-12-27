@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@hello-pangea/dnd";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -39,8 +38,6 @@ export default function VisualBuilder() {
   const [selectedElement, setSelectedElement] = useState(null);
   const [viewMode, setViewMode] = useState("desktop");
   const [showCode, setShowCode] = useState(false);
-
-  const sensors = useSensors(useSensor(PointerSensor));
 
   const addElement = (component) => {
     const newElement = {
