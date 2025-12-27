@@ -4,6 +4,7 @@ import DevOps from './pages/DevOps';
 import Integrations from './pages/Integrations';
 import SLAContracts from './pages/SLAContracts';
 import ProjectDetails from './pages/ProjectDetails';
+import ApplicationBuilder from './pages/ApplicationBuilder';
 import __Layout from './Layout.jsx';
 
 
@@ -14,6 +15,7 @@ export const PAGES = {
     "Integrations": Integrations,
     "SLAContracts": SLAContracts,
     "ProjectDetails": ProjectDetails,
+    "ApplicationBuilder": ApplicationBuilder,
 }
 
 export const pagesConfig = {

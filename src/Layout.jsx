@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "Dashboard" },
+  { name: "Application Builder", icon: Layers, href: "ApplicationBuilder" },
   { name: "Cloud Providers", icon: Cloud, href: "CloudProviders" },
   { name: "DevOps", icon: GitBranch, href: "DevOps" },
   { name: "Integrations", icon: Zap, href: "Integrations" },
