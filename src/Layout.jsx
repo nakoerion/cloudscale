@@ -17,7 +17,11 @@ import {
   ChevronDown,
   Bell,
   Search,
-  Layers
+  Layers,
+  Paintbrush,
+  Workflow,
+  Server,
+  Activity
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -31,6 +35,10 @@ import { cn } from "@/lib/utils";
 const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "Dashboard" },
   { name: "Application Builder", icon: Layers, href: "ApplicationBuilder" },
+  { name: "Visual Builder", icon: Paintbrush, href: "VisualBuilder" },
+  { name: "Workflow Automation", icon: Workflow, href: "WorkflowAutomation" },
+  { name: "Infrastructure", icon: Server, href: "Infrastructure" },
+  { name: "Monitoring", icon: Activity, href: "Monitoring" },
   { name: "Cloud Providers", icon: Cloud, href: "CloudProviders" },
   { name: "DevOps", icon: GitBranch, href: "DevOps" },
   { name: "Integrations", icon: Zap, href: "Integrations" },
