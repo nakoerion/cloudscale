@@ -12,127 +12,27 @@ import {
   Download,
   Play,
   Settings,
-  CheckCircle2
+  CheckCircle2,
+  Edit,
+  Wand2,
+  Plus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import TemplateEditor from "@/components/infrastructure/TemplateEditor";
+import TerraformGenerator from "@/components/infrastructure/TerraformGenerator";
+import { toast } from "sonner";
 
-const IAC_TEMPLATES = [
+const DEFAULT_TEMPLATES = [
   {
     id: "vpc",
     name: "VPC with Subnets",
     provider: "AWS",
     description: "Private VPC with public, private, and database subnets",
-    resources: ["VPC", "3 Subnets", "Internet Gateway", "NAT Gateway", "Route Tables"]
-  },
-  {
-    id: "kubernetes",
-    name: "Kubernetes Cluster",
-    provider: "GCP",
-    description: "Production-ready GKE cluster with auto-scaling",
-    resources: ["GKE Cluster", "Node Pools", "Load Balancer", "Auto-scaling", "Monitoring"]
-  },
-  {
-    id: "serverless",
-    name: "Serverless API",
-    provider: "AWS",
-    description: "API Gateway with Lambda functions and DynamoDB",
-    resources: ["API Gateway", "Lambda Functions", "DynamoDB", "CloudWatch", "IAM Roles"]
-  },
-  {
-    id: "database",
-    name: "Database Cluster",
-    provider: "Azure",
-    description: "High-availability PostgreSQL with backups",
-    resources: ["PostgreSQL", "Read Replicas", "Backup Vault", "Private Endpoint", "Monitoring"]
-  }
-];
-
-const SECURITY_FEATURES = [
-  { name: "VPC Isolation", status: "active", icon: Network },
-  { name: "Private Endpoints", status: "active", icon: Lock },
-  { name: "Security Groups", status: "configured", icon: Shield },
-  { name: "SSL/TLS", status: "active", icon: Lock },
-  { name: "IAM Policies", status: "configured", icon: Shield },
-  { name: "VPN Gateway", status: "inactive", icon: Network }
-];
-
-export default function Infrastructure() {
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Infrastructure as Code</h1>
-          <p className="text-slate-500">Provision and manage cloud infrastructure with Terraform templates</p>
-        </div>
-
-        <Tabs defaultValue="templates" className="w-full">
-          <TabsList className="bg-white border border-slate-200">
-            <TabsTrigger value="templates">
-              <FileCode className="w-4 h-4 mr-2" /> IaC Templates
-            </TabsTrigger>
-            <TabsTrigger value="networking">
-              <Network className="w-4 h-4 mr-2" /> Private Networking
-            </TabsTrigger>
-            <TabsTrigger value="security">
-              <Shield className="w-4 h-4 mr-2" /> Security
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Templates */}
-          <TabsContent value="templates" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              {IAC_TEMPLATES.map((template) => (
-                <div
-                  key={template.id}
-                  className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all cursor-pointer"
-                  onClick={() => setSelectedTemplate(template)}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="font-semibold text-slate-900 mb-1">{template.name}</h3>
-                      <Badge variant="outline">{template.provider}</Badge>
-                    </div>
-                    <FileCode className="w-8 h-8 text-violet-600" />
-                  </div>
-                  <p className="text-sm text-slate-500 mb-4">{template.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {template.resources.slice(0, 3).map((resource, i) => (
-                      <span key={i} className="text-xs px-2 py-1 bg-slate-100 text-slate-600 rounded">
-                        {resource}
-                      </span>
-                    ))}
-                    {template.resources.length > 3 && (
-                      <span className="text-xs px-2 py-1 bg-slate-100 text-slate-500 rounded">
-                        +{template.resources.length - 3}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="flex-1">
-                      <Code className="w-3 h-3 mr-1" /> View Code
-                    </Button>
-                    <Button size="sm" className="flex-1 bg-violet-600 hover:bg-violet-700">
-                      <Play className="w-3 h-3 mr-1" /> Deploy
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {selectedTemplate && (
-              <div className="bg-slate-900 rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-white">{selectedTemplate.name} - Terraform</h3>
-                  <Button variant="outline" className="bg-white/10 text-white border-white/20">
-                    <Download className="w-4 h-4 mr-2" /> Download
-                  </Button>
-                </div>
-                <pre className="text-sm text-slate-100 overflow-x-auto">
-                  <code>{`resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+    resources: ["VPC", "3 Subnets", "Internet Gateway", "NAT Gateway", "Route Tables"],
+    code: `resource "aws_vpc" "main" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
   
   tags = {
     Name = "main-vpc"
@@ -152,7 +52,223 @@ resource "aws_subnet" "public" {
 
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
-}`}</code>
+  
+  tags = {
+    Name = "main-igw"
+  }
+}
+
+resource "aws_nat_gateway" "main" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public[0].id
+}`
+  },
+  {
+    id: "kubernetes",
+    name: "Kubernetes Cluster",
+    provider: "GCP",
+    description: "Production-ready GKE cluster with auto-scaling",
+    resources: ["GKE Cluster", "Node Pools", "Load Balancer", "Auto-scaling", "Monitoring"],
+    code: `resource "google_container_cluster" "primary" {
+  name     = "gke-cluster"
+  location = "us-central1"
+  
+  initial_node_count = 1
+  
+  node_config {
+    machine_type = "e2-medium"
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+  }
+}`
+  },
+  {
+    id: "serverless",
+    name: "Serverless API",
+    provider: "AWS",
+    description: "API Gateway with Lambda functions and DynamoDB",
+    resources: ["API Gateway", "Lambda Functions", "DynamoDB", "CloudWatch", "IAM Roles"],
+    code: `resource "aws_lambda_function" "api" {
+  filename      = "lambda.zip"
+  function_name = "api-handler"
+  role          = aws_iam_role.lambda.arn
+  handler       = "index.handler"
+  runtime       = "nodejs18.x"
+}
+
+resource "aws_api_gateway_rest_api" "api" {
+  name        = "serverless-api"
+  description = "Serverless API Gateway"
+}`
+  },
+  {
+    id: "database",
+    name: "Database Cluster",
+    provider: "Azure",
+    description: "High-availability PostgreSQL with backups",
+    resources: ["PostgreSQL", "Read Replicas", "Backup Vault", "Private Endpoint", "Monitoring"],
+    code: `resource "azurerm_postgresql_flexible_server" "main" {
+  name                = "postgres-server"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  
+  sku_name   = "GP_Standard_D2s_v3"
+  version    = "15"
+  
+  storage_mb = 32768
+}`
+  }
+];
+
+const SECURITY_FEATURES = [
+  { name: "VPC Isolation", status: "active", icon: Network },
+  { name: "Private Endpoints", status: "active", icon: Lock },
+  { name: "Security Groups", status: "configured", icon: Shield },
+  { name: "SSL/TLS", status: "active", icon: Lock },
+  { name: "IAM Policies", status: "configured", icon: Shield },
+  { name: "VPN Gateway", status: "inactive", icon: Network }
+];
+
+export default function Infrastructure() {
+  const [templates, setTemplates] = useState(DEFAULT_TEMPLATES);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [editingTemplate, setEditingTemplate] = useState(null);
+  const [showEditor, setShowEditor] = useState(false);
+  const [showGenerator, setShowGenerator] = useState(false);
+
+  const handleSaveTemplate = (template) => {
+    const newTemplate = {
+      ...template,
+      id: `custom-${Date.now()}`,
+      isCustom: true
+    };
+    setTemplates([...templates, newTemplate]);
+    setShowEditor(false);
+    toast.success("Custom template saved");
+  };
+
+  const handleGenerateTemplate = (template) => {
+    const newTemplate = {
+      ...template,
+      id: `generated-${Date.now()}`,
+      isCustom: true
+    };
+    setTemplates([...templates, newTemplate]);
+  };
+
+  const handleCustomize = (template) => {
+    setEditingTemplate(template);
+    setShowEditor(true);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Infrastructure as Code</h1>
+            <p className="text-slate-500">Provision and manage cloud infrastructure with Terraform templates</p>
+          </div>
+          <Button 
+            onClick={() => setShowGenerator(true)}
+            className="bg-violet-600 hover:bg-violet-700"
+          >
+            <Wand2 className="w-4 h-4 mr-2" /> Generate Terraform
+          </Button>
+        </div>
+
+        <Tabs defaultValue="templates" className="w-full">
+          <TabsList className="bg-white border border-slate-200">
+            <TabsTrigger value="templates">
+              <FileCode className="w-4 h-4 mr-2" /> IaC Templates
+            </TabsTrigger>
+            <TabsTrigger value="networking">
+              <Network className="w-4 h-4 mr-2" /> Private Networking
+            </TabsTrigger>
+            <TabsTrigger value="security">
+              <Shield className="w-4 h-4 mr-2" /> Security
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Templates */}
+          <TabsContent value="templates" className="mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {templates.map((template) => (
+                <div
+                  key={template.id}
+                  className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all cursor-pointer"
+                  onClick={() => setSelectedTemplate(template)}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="font-semibold text-slate-900 mb-1">{template.name}</h3>
+                      <div className="flex gap-2">
+                        <Badge variant="outline">{template.provider}</Badge>
+                        {template.isCustom && (
+                          <Badge className="bg-violet-100 text-violet-700">Custom</Badge>
+                        )}
+                      </div>
+                    </div>
+                    <FileCode className="w-8 h-8 text-violet-600" />
+                  </div>
+                  <p className="text-sm text-slate-500 mb-4">{template.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {template.resources.slice(0, 3).map((resource, i) => (
+                      <span key={i} className="text-xs px-2 py-1 bg-slate-100 text-slate-600 rounded">
+                        {resource}
+                      </span>
+                    ))}
+                    {template.resources.length > 3 && (
+                      <span className="text-xs px-2 py-1 bg-slate-100 text-slate-500 rounded">
+                        +{template.resources.length - 3}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => setSelectedTemplate(template)}
+                    >
+                      <Code className="w-3 h-3 mr-1" /> View
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => handleCustomize(template)}
+                    >
+                      <Edit className="w-3 h-3 mr-1" /> Customize
+                    </Button>
+                    <Button size="sm" className="flex-1 bg-violet-600 hover:bg-violet-700">
+                      <Play className="w-3 h-3 mr-1" /> Deploy
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {selectedTemplate && (
+              <div className="bg-slate-900 rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-white">{selectedTemplate.name} - Terraform</h3>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="bg-white/10 text-white border-white/20"
+                      onClick={() => handleCustomize(selectedTemplate)}
+                    >
+                      <Edit className="w-4 h-4 mr-2" /> Customize
+                    </Button>
+                    <Button variant="outline" className="bg-white/10 text-white border-white/20">
+                      <Download className="w-4 h-4 mr-2" /> Download
+                    </Button>
+                  </div>
+                </div>
+                <pre className="text-sm text-slate-100 overflow-x-auto">
+                  <code>{selectedTemplate.code}</code>
                 </pre>
               </div>
             )}
@@ -260,6 +376,22 @@ resource "aws_internet_gateway" "main" {
           </TabsContent>
         </Tabs>
       </div>
+
+      <TemplateEditor
+        template={editingTemplate}
+        open={showEditor}
+        onClose={() => {
+          setShowEditor(false);
+          setEditingTemplate(null);
+        }}
+        onSave={handleSaveTemplate}
+      />
+
+      <TerraformGenerator
+        open={showGenerator}
+        onClose={() => setShowGenerator(false)}
+        onGenerate={handleGenerateTemplate}
+      />
     </div>
   );
 }
