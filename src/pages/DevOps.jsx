@@ -17,6 +17,9 @@ import PipelineCard from "@/components/dashboard/PipelineCard";
 import DeploymentTimeline from "@/components/dashboard/DeploymentTimeline";
 import CreatePipelineModal from "@/components/modals/CreatePipelineModal";
 import MetricCard from "@/components/dashboard/MetricCard";
+import DNSManager from "@/components/monitoring/DNSManager";
+import CDNSettings from "@/components/monitoring/CDNSettings";
+import AnalyticsIntegration from "@/components/monitoring/AnalyticsIntegration";
 
 export default function DevOps() {
   const [showPipelineModal, setShowPipelineModal] = useState(false);
@@ -225,6 +228,13 @@ export default function DevOps() {
           </TabsContent>
 
           <TabsContent value="infrastructure">
+            <div className="space-y-6 mb-6">
+              <DNSManager domain="your-app.cloudforge.app" />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <CDNSettings />
+                <AnalyticsIntegration />
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-white rounded-2xl border border-slate-100 p-6">
                 <div className="flex items-center gap-3 mb-4">
