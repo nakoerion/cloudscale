@@ -20,6 +20,9 @@ import MetricCard from "@/components/dashboard/MetricCard";
 import DNSManager from "@/components/monitoring/DNSManager";
 import CDNSettings from "@/components/monitoring/CDNSettings";
 import AnalyticsIntegration from "@/components/monitoring/AnalyticsIntegration";
+import AIPipelineInsights from "@/components/devops/AIPipelineInsights";
+import DeploymentFailurePrediction from "@/components/devops/DeploymentFailurePrediction";
+import AICodeRefactoring from "@/components/devops/AICodeRefactoring";
 
 export default function DevOps() {
   const [showPipelineModal, setShowPipelineModal] = useState(false);
@@ -141,6 +144,14 @@ export default function DevOps() {
           </TabsList>
 
           <TabsContent value="pipelines">
+            <div className="mb-6 space-y-6">
+              <AIPipelineInsights />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <DeploymentFailurePrediction />
+                <AICodeRefactoring />
+              </div>
+            </div>
+            
             {loadingPipelines ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[1,2,3,4].map(i => (
