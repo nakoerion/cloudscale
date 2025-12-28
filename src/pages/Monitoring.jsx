@@ -34,6 +34,9 @@ import AIAnomalyDetection from "@/components/monitoring/AIAnomalyDetection";
 import ResourceExhaustionPredictor from "@/components/monitoring/ResourceExhaustionPredictor";
 import InfrastructureEventCorrelation from "@/components/monitoring/InfrastructureEventCorrelation";
 import AIInfrastructureRecommendations from "@/components/monitoring/AIInfrastructureRecommendations";
+import AISecurityScanner from "@/components/security/AISecurityScanner";
+import ComplianceChecker from "@/components/security/ComplianceChecker";
+import SecurityPostureScore from "@/components/security/SecurityPostureScore";
 
 const METRICS = [
   { name: "CPU Usage", value: "45%", trend: "down", change: "-2%", status: "healthy", icon: Cpu },
@@ -354,6 +357,24 @@ export default function Monitoring() {
                 </Button>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* AI Security Hardening */}
+        <div className="mt-8 space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <Shield className="w-6 h-6 text-red-600" />
+            <h2 className="text-2xl font-bold text-slate-900">AI Security Hardening</h2>
+          </div>
+          
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <SecurityPostureScore />
+              <div className="lg:col-span-2">
+                <AISecurityScanner />
+              </div>
+            </div>
+            <ComplianceChecker />
           </div>
         </div>
 
