@@ -43,6 +43,7 @@ import PublishTemplateModal from "@/components/builder/PublishTemplateModal";
 import AIIdeaAnalyzer from "@/components/builder/AIIdeaAnalyzer";
 import CodeGenerator from "@/components/builder/CodeGenerator";
 import TestingValidator from "@/components/builder/TestingValidator";
+import CloudDeploymentWizard from "@/components/builder/CloudDeploymentWizard";
 
 const STEPS = [
   { id: 0, name: "Describe Idea", icon: Lightbulb },
@@ -794,111 +795,12 @@ export default function ApplicationBuilder() {
             />
           )}
 
-          {/* Step 6: Deployment */}
+          {/* Step 6: Cloud Deployment */}
           {currentStep === 6 && (
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Choose your tech stack</h2>
-                <p className="text-slate-500">Select the technologies for your application</p>
-              </div>
-
-              {Object.entries(TECH_STACKS).map(([category, technologies]) => (
-                <div key={category}>
-                  <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-3">
-                    {category}
-                  </h3>
-                  <div className="flex flex-wrap gap-3">
-                    {technologies.map((tech) => {
-                      const isSelected = formData.tech_stack.includes(tech);
-                      return (
-                        <button
-                          key={tech}
-                          onClick={() => {
-                            setFormData({
-                              ...formData,
-                              tech_stack: isSelected
-                                ? formData.tech_stack.filter(t => t !== tech)
-                                : [...formData.tech_stack, tech]
-                            });
-                          }}
-                          className={cn(
-                            "px-6 py-3 rounded-xl border-2 text-sm font-medium transition-all",
-                            isSelected
-                              ? "border-violet-500 bg-violet-50 text-violet-700"
-                              : "border-slate-200 text-slate-600 hover:border-slate-300"
-                          )}
-                        >
-                          {tech}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Step 5: Deployment */}
-          {currentStep === 5 && (
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Deployment configuration</h2>
-                <p className="text-slate-500">Choose where to deploy your application</p>
-              </div>
-
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <Label className="text-base">Cloud Provider</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {CLOUD_PROVIDERS.map((provider) => (
-                      <button
-                        key={provider.value}
-                        onClick={() => setFormData({ ...formData, cloud_provider: provider.value })}
-                        className={cn(
-                          "p-6 rounded-2xl border-2 text-left transition-all",
-                          formData.cloud_provider === provider.value
-                            ? "border-violet-500 bg-violet-50 shadow-lg"
-                            : "border-slate-200 hover:border-slate-300"
-                        )}
-                      >
-                        <div className="flex items-center gap-4">
-                          <span className="text-3xl">{provider.icon}</span>
-                          <div>
-                            <h3 className="font-semibold text-slate-900 mb-1">{provider.label}</h3>
-                            <p className="text-sm text-slate-500">{provider.description}</p>
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="region" className="text-base">Deployment Region</Label>
-                  <Input
-                    id="region"
-                    placeholder="us-east-1"
-                    value={formData.deployment_region}
-                    onChange={(e) => setFormData({ ...formData, deployment_region: e.target.value })}
-                    className="text-base p-6"
-                  />
-                </div>
-
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-                      <Cloud className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-blue-900 mb-1">Auto-scaling enabled</h4>
-                      <p className="text-sm text-blue-700">
-                        Your application will automatically scale based on demand with built-in load balancing and health checks.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <CloudDeploymentWizard 
+              formData={formData}
+              onComplete={() => setCurrentStep(7)}
+            />
           )}
 
           {/* Step 7: Review */}
