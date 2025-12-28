@@ -15,10 +15,12 @@ import {
   Clock,
   Award,
   X,
-  Filter
+  Filter,
+  MessageSquare
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import TemplateReviews from "./TemplateReviews";
 
 const CATEGORIES = [
   { value: "all", label: "All", icon: "🎨" },
@@ -212,51 +214,63 @@ export default function TemplateMarketplace({ open, onClose, onSelectTemplate })
         {/* Template Details Modal */}
         {selectedTemplate && (
           <Dialog open={!!selectedTemplate} onOpenChange={() => setSelectedTemplate(null)}>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{selectedTemplate.name}</DialogTitle>
               </DialogHeader>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <img 
                   src={selectedTemplate.preview_image} 
                   alt={selectedTemplate.name}
-                  className="w-full h-48 object-cover rounded-xl"
+                  className="w-full h-64 object-cover rounded-xl"
                 />
                 
-                <p className="text-slate-600">{selectedTemplate.description}</p>
+                <p className="text-slate-600 text-lg">{selectedTemplate.description}</p>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                   <div className="flex items-center gap-2">
                     <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-                    <span className="font-semibold">{(selectedTemplate.average_rating || 0).toFixed(1)}</span>
+                    <span className="font-semibold text-lg">{(selectedTemplate.average_rating || 0).toFixed(1)}</span>
                     <span className="text-slate-500">({selectedTemplate.review_count || 0} reviews)</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-500">
-                    <Download className="w-4 h-4" />
+                    <Download className="w-5 h-5" />
                     <span>{selectedTemplate.downloads || 0} downloads</span>
                   </div>
                 </div>
 
                 {selectedTemplate.features?.length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-slate-900 mb-2">Included Features</h4>
+                    <h4 className="font-semibold text-slate-900 mb-3 text-lg">Included Features</h4>
                     <div className="flex flex-wrap gap-2">
                       {selectedTemplate.features.map((feature, i) => (
-                        <Badge key={i} variant="outline">{feature}</Badge>
+                        <Badge key={i} variant="outline" className="text-sm py-1.5 px-3">{feature}</Badge>
                       ))}
                     </div>
                   </div>
                 )}
 
-                <div className="flex items-center justify-between pt-4 border-t">
-                  <p className="text-sm text-slate-500">Created by <strong>{selectedTemplate.author_name}</strong></p>
+                <div className="flex items-center justify-between py-4 border-y">
+                  <p className="text-sm text-slate-500">Created by <strong className="text-slate-700">{selectedTemplate.author_name}</strong></p>
                   <Button 
                     onClick={() => handleUseTemplate(selectedTemplate)}
                     className="bg-violet-600 hover:bg-violet-700"
                   >
-                    Use Template
+                    <Download className="w-4 h-4 mr-2" /> Use Template
                   </Button>
+                </div>
+
+                {/* Reviews Section */}
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <MessageSquare className="w-5 h-5 text-violet-600" />
+                    <h3 className="text-xl font-bold text-slate-900">Reviews</h3>
+                  </div>
+                  <TemplateReviews 
+                    templateId={selectedTemplate.id} 
+                    template={selectedTemplate}
+                  />
                 </div>
               </div>
             </DialogContent>
