@@ -24,6 +24,10 @@ import TenantManager from "@/components/infrastructure/TenantManager";
 import DataIsolationViewer from "@/components/infrastructure/DataIsolationViewer";
 import TenantConfigManager from "@/components/infrastructure/TenantConfigManager";
 import DatabaseSchemaOptimizer from "@/components/infrastructure/DatabaseSchemaOptimizer";
+import DatabaseManager from "@/components/infrastructure/DatabaseManager";
+import CacheManager from "@/components/infrastructure/CacheManager";
+import AutoScalingManager from "@/components/infrastructure/AutoScalingManager";
+import HealthCheckManager from "@/components/infrastructure/HealthCheckManager";
 import { toast } from "sonner";
 
 const DEFAULT_TEMPLATES = [
@@ -184,8 +188,12 @@ export default function Infrastructure() {
           </Button>
         </div>
 
-        <Tabs defaultValue="multi-tenancy" className="w-full">
+        <Tabs defaultValue="database" className="w-full">
           <TabsList className="bg-white border border-slate-200">
+            <TabsTrigger value="database">Database</TabsTrigger>
+            <TabsTrigger value="caching">Caching</TabsTrigger>
+            <TabsTrigger value="scaling">Auto-Scaling</TabsTrigger>
+            <TabsTrigger value="health">Health Checks</TabsTrigger>
             <TabsTrigger value="multi-tenancy">
               <Server className="w-4 h-4 mr-2" /> Multi-Tenancy
             </TabsTrigger>
@@ -193,12 +201,28 @@ export default function Infrastructure() {
               <FileCode className="w-4 h-4 mr-2" /> IaC Templates
             </TabsTrigger>
             <TabsTrigger value="networking">
-              <Network className="w-4 h-4 mr-2" /> Private Networking
+              <Network className="w-4 h-4 mr-2" /> Networking
             </TabsTrigger>
             <TabsTrigger value="security">
               <Shield className="w-4 h-4 mr-2" /> Security
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="database" className="mt-6">
+            <DatabaseManager />
+          </TabsContent>
+
+          <TabsContent value="caching" className="mt-6">
+            <CacheManager />
+          </TabsContent>
+
+          <TabsContent value="scaling" className="mt-6">
+            <AutoScalingManager />
+          </TabsContent>
+
+          <TabsContent value="health" className="mt-6">
+            <HealthCheckManager />
+          </TabsContent>
 
           {/* Multi-Tenancy */}
           <TabsContent value="multi-tenancy" className="mt-6">
