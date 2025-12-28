@@ -14,9 +14,16 @@ import {
   BarChart3,
   LineChart,
   PieChart,
-  RefreshCw
+  RefreshCw,
+  Plus,
+  Trash2,
+  LayoutGrid
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Heatmap from "@/components/monitoring/Heatmap";
+import ScatterPlot from "@/components/monitoring/ScatterPlot";
+import GeoMap from "@/components/monitoring/GeoMap";
+import ChartSelector from "@/components/monitoring/ChartSelector";
 
 const METRICS = [
   { name: "CPU Usage", value: "45%", trend: "down", change: "-2%", status: "healthy", icon: Cpu },
@@ -33,6 +40,73 @@ const ALERTS = [
 
 export default function Monitoring() {
   const [timeRange, setTimeRange] = useState("1h");
+  const [showChartSelector, setShowChartSelector] = useState(false);
+  const [customDashboard, setCustomDashboard] = useState([
+    { id: "heatmap-1", type: "heatmap" },
+    { id: "scatter-1", type: "scatter" },
+    { id: "geo-1", type: "geo" }
+  ]);
+
+  const generateHeatmapData = () => {
+    const data = [];
+    for (let i = 0; i < 144; i++) {
+      data.push({
+        x: i % 12,
+        y: Math.floor(i / 12),
+        value: Math.random() * 100
+      });
+    }
+    return data;
+  };
+
+  const generateScatterData = () => {
+    return Array.from({ length: 50 }, () => ({
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      label: `Server ${Math.floor(Math.random() * 10)}`,
+      color: Math.random() > 0.5 ? "bg-violet-500" : "bg-emerald-500"
+    }));
+  };
+
+  const generateGeoData = () => {
+    return [
+      { lat: 40.7128, lng: -74.0060, label: "New York", value: 15420, color: "#8b5cf6" },
+      { lat: 51.5074, lng: -0.1278, label: "London", value: 12800, color: "#8b5cf6" },
+      { lat: 35.6762, lng: 139.6503, label: "Tokyo", value: 18900, color: "#8b5cf6" },
+      { lat: -33.8688, lng: 151.2093, label: "Sydney", value: 8600, color: "#8b5cf6" },
+      { lat: 37.7749, lng: -122.4194, label: "San Francisco", value: 14200, color: "#8b5cf6" },
+      { lat: 48.8566, lng: 2.3522, label: "Paris", value: 11500, color: "#8b5cf6" }
+    ];
+  };
+
+  const addChart = (chartType) => {
+    setCustomDashboard([
+      ...customDashboard,
+      { id: `${chartType}-${Date.now()}`, type: chartType }
+    ]);
+  };
+
+  const removeChart = (chartId) => {
+    setCustomDashboard(customDashboard.filter(c => c.id !== chartId));
+  };
+
+  const renderChart = (chart) => {
+    switch (chart.type) {
+      case "heatmap":
+        return <Heatmap data={generateHeatmapData()} title="Server Load Heatmap (24h)" />;
+      case "scatter":
+        return <ScatterPlot 
+          data={generateScatterData()} 
+          title="Response Time vs CPU Usage"
+          xLabel="CPU Usage (%)"
+          yLabel="Response Time (ms)"
+        />;
+      case "geo":
+        return <GeoMap locations={generateGeoData()} title="Global Traffic Distribution" />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
@@ -60,6 +134,12 @@ export default function Monitoring() {
                 </button>
               ))}
             </div>
+            <Button 
+              onClick={() => setShowChartSelector(true)}
+              className="bg-violet-600 hover:bg-violet-700"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Chart
+            </Button>
             <Button variant="outline">
               <RefreshCw className="w-4 h-4 mr-2" /> Refresh
             </Button>
@@ -266,7 +346,39 @@ export default function Monitoring() {
             </div>
           </div>
         </div>
+
+        {/* Custom Dashboard */}
+        {customDashboard.length > 0 && (
+          <div className="mt-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <LayoutGrid className="w-6 h-6 text-violet-600" />
+                <h2 className="text-2xl font-bold text-slate-900">Custom Dashboard</h2>
+              </div>
+              <Badge variant="outline">{customDashboard.length} charts</Badge>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {customDashboard.map((chart) => (
+                <div key={chart.id} className="relative group">
+                  {renderChart(chart)}
+                  <button
+                    onClick={() => removeChart(chart.id)}
+                    className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
+
+      <ChartSelector
+        open={showChartSelector}
+        onClose={() => setShowChartSelector(false)}
+        onSelect={addChart}
+      />
     </div>
   );
 }
