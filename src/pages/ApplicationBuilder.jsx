@@ -32,15 +32,18 @@ import {
   Filter,
   X,
   Github,
-  GitBranch
+  GitBranch,
+  Lightbulb
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import RepositoryConnectModal from "@/components/builder/RepositoryConnectModal";
 import PipelineStatus from "@/components/builder/PipelineStatus";
 import TemplateMarketplace from "@/components/builder/TemplateMarketplace";
 import PublishTemplateModal from "@/components/builder/PublishTemplateModal";
+import AIIdeaAnalyzer from "@/components/builder/AIIdeaAnalyzer";
 
 const STEPS = [
+  { id: 0, name: "Describe Idea", icon: Lightbulb },
   { id: 1, name: "Project Type", icon: Sparkles },
   { id: 2, name: "Template", icon: Palette },
   { id: 3, name: "Features", icon: Zap },
@@ -213,7 +216,7 @@ const CLOUD_PROVIDERS = [
 ];
 
 export default function ApplicationBuilder() {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -285,7 +288,21 @@ export default function ApplicationBuilder() {
   };
 
   const handleBack = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 0) setCurrentStep(currentStep - 0);
+  };
+
+  const handleAIAnalysisComplete = (analysisData) => {
+    // Pre-fill form data based on AI analysis
+    setFormData({
+      ...formData,
+      name: analysisData.suggested_name,
+      description: analysisData.description,
+      type: analysisData.app_type,
+      template: analysisData.recommended_template,
+      features: analysisData.key_features,
+      tech_stack: analysisData.tech_recommendations
+    });
+    setCurrentStep(1); // Move to project type confirmation
   };
 
   const handleFinish = () => {
@@ -309,6 +326,7 @@ export default function ApplicationBuilder() {
 
   const canProceed = () => {
     switch (currentStep) {
+      case 0: return false; // AI step handles its own navigation
       case 1: return formData.type && formData.name;
       case 2: return formData.template;
       case 3: return true;
@@ -399,6 +417,11 @@ export default function ApplicationBuilder() {
 
         {/* Step Content */}
         <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 md:p-16 mb-10 min-h-[600px] transition-all duration-500">
+          {/* Step 0: AI Idea Analyzer */}
+          {currentStep === 0 && (
+            <AIIdeaAnalyzer onAnalysisComplete={handleAIAnalysisComplete} />
+          )}
+
           {/* Step 1: Project Type */}
           {currentStep === 1 && (
             <div className="space-y-10 animate-in fade-in duration-500">
@@ -1033,7 +1056,7 @@ export default function ApplicationBuilder() {
             <Button
               variant="outline"
               onClick={handleBack}
-              disabled={currentStep === 1}
+              disabled={currentStep === 0}
               className="px-10 py-6 text-base rounded-2xl border-2 hover:shadow-lg transition-all duration-300 disabled:opacity-50"
             >
               <ArrowLeft className="w-5 h-5 mr-2" /> Back
