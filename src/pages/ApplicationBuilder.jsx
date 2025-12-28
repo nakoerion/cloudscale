@@ -13,6 +13,8 @@ import {
   ArrowLeft, 
   Check, 
   Sparkles,
+  Store,
+  Upload,
   Code,
   Palette,
   Database,
@@ -35,6 +37,8 @@ import {
 import { cn } from "@/lib/utils";
 import RepositoryConnectModal from "@/components/builder/RepositoryConnectModal";
 import PipelineStatus from "@/components/builder/PipelineStatus";
+import TemplateMarketplace from "@/components/builder/TemplateMarketplace";
+import PublishTemplateModal from "@/components/builder/PublishTemplateModal";
 
 const STEPS = [
   { id: 1, name: "Project Type", icon: Sparkles },
@@ -227,6 +231,8 @@ export default function ApplicationBuilder() {
   const [showRepoModal, setShowRepoModal] = useState(false);
   const [repository, setRepository] = useState(null);
   const [showPipeline, setShowPipeline] = useState(false);
+  const [showMarketplace, setShowMarketplace] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
 
   useEffect(() => {
     const savedFavorites = localStorage.getItem("template_favorites");
@@ -494,6 +500,24 @@ export default function ApplicationBuilder() {
                     >
                       <X className="w-5 h-5" />
                     </button>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => setShowMarketplace(true)}
+                    variant="outline"
+                    className="px-6 py-6 rounded-2xl border-2 hover:border-violet-500 hover:bg-violet-50"
+                  >
+                    <Store className="w-5 h-5 mr-2" /> Browse Marketplace
+                  </Button>
+                  {formData.template && (
+                    <Button
+                      onClick={() => setShowPublishModal(true)}
+                      variant="outline"
+                      className="px-6 py-6 rounded-2xl border-2 hover:border-emerald-500 hover:bg-emerald-50"
+                    >
+                      <Upload className="w-5 h-5 mr-2" /> Share Template
+                    </Button>
                   )}
                 </div>
               </div>
@@ -1060,6 +1084,30 @@ export default function ApplicationBuilder() {
           onClose={() => setShowRepoModal(false)}
           onConnect={handleRepositoryConnect}
           projectName={formData.name}
+        />
+
+        <TemplateMarketplace
+          open={showMarketplace}
+          onClose={() => setShowMarketplace(false)}
+          onSelectTemplate={(template) => {
+            setFormData({ 
+              ...formData, 
+              template: template.id,
+              features: template.features || [],
+              name: formData.name || template.name
+            });
+          }}
+        />
+
+        <PublishTemplateModal
+          open={showPublishModal}
+          onClose={() => setShowPublishModal(false)}
+          templateData={{
+            name: formData.name,
+            preview: TEMPLATES.find(t => t.id === formData.template)?.preview,
+            features: formData.features,
+            ...formData
+          }}
         />
       </div>
     </div>
