@@ -24,6 +24,9 @@ import Heatmap from "@/components/monitoring/Heatmap";
 import ScatterPlot from "@/components/monitoring/ScatterPlot";
 import GeoMap from "@/components/monitoring/GeoMap";
 import ChartSelector from "@/components/monitoring/ChartSelector";
+import AnomalyDetection from "@/components/monitoring/AnomalyDetection";
+import DistributedTracing from "@/components/monitoring/DistributedTracing";
+import AlertConfiguration from "@/components/monitoring/AlertConfiguration";
 
 const METRICS = [
   { name: "CPU Usage", value: "45%", trend: "down", change: "-2%", status: "healthy", icon: Cpu },
@@ -345,6 +348,21 @@ export default function Monitoring() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Advanced Monitoring Tools */}
+        <div className="mt-8 space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <Activity className="w-6 h-6 text-violet-600" />
+            <h2 className="text-2xl font-bold text-slate-900">Advanced Monitoring</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <AnomalyDetection />
+            <DistributedTracing />
+          </div>
+          
+          <AlertConfiguration />
         </div>
 
         {/* Custom Dashboard */}
