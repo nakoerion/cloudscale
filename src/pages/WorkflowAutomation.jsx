@@ -244,142 +244,7 @@ export default function WorkflowAutomation() {
           </TabsList>
 
           <TabsContent value="workflows">
-            {/* Workflow List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">Build Your Workflow</h2>
-              <Input
-                placeholder="Workflow name (e.g., Lead scoring and routing)"
-                value={newWorkflow.name}
-                onChange={(e) => setNewWorkflow({ ...newWorkflow, name: e.target.value })}
-                className="text-lg p-6 mb-6"
-              />
-
-              {/* Trigger Selection */}
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  1. Choose a Trigger
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {TRIGGERS.map((trigger) => {
-                    const Icon = trigger.icon;
-                    const isSelected = newWorkflow.trigger?.id === trigger.id;
-                    return (
-                      <button
-                        key={trigger.id}
-                        onClick={() => setNewWorkflow({ ...newWorkflow, trigger })}
-                        className={cn(
-                          "p-6 rounded-2xl border-2 text-center transition-all",
-                          isSelected
-                            ? "border-violet-500 bg-violet-50 shadow-lg"
-                            : "border-slate-200 hover:border-slate-300"
-                        )}
-                      >
-                        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3", trigger.color)}>
-                          <Icon className="w-6 h-6 text-white" />
-                        </div>
-                        <p className="font-medium text-slate-900">{trigger.name}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Workflow Canvas */}
-              {newWorkflow.trigger && (
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                    2. Build Your Workflow
-                  </h3>
-                  
-                  {/* Workflow Visual */}
-                  <div className="mb-6 p-6 bg-slate-50 rounded-2xl max-h-[500px] overflow-y-auto">
-                    <div className="flex flex-col gap-3">
-                      {/* Trigger */}
-                      <div className="flex items-center gap-3">
-                        <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", newWorkflow.trigger.color)}>
-                          <newWorkflow.trigger.icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="flex-1 p-3 bg-white rounded-lg border border-slate-200">
-                          <p className="font-medium text-slate-900">{newWorkflow.trigger.name}</p>
-                          <p className="text-sm text-slate-500">When this happens</p>
-                        </div>
-                      </div>
-
-                      {/* Nodes */}
-                      {newWorkflow.nodes.map((node, index) => renderNode(node, index + 1))}
-
-                      {/* Add Node Indicator */}
-                      <div className="flex items-center justify-center py-2">
-                        <Plus className="w-5 h-5 text-slate-400" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Node Palette */}
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-sm font-semibold text-slate-700 mb-3">Logic & Control</h4>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        {LOGIC_NODES.map((node) => {
-                          const Icon = node.icon;
-                          return (
-                            <button
-                              key={node.id}
-                              onClick={() => addNode(node)}
-                              className="p-4 rounded-xl border border-slate-200 hover:border-violet-500 hover:bg-violet-50 transition-all text-left"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", node.color)}>
-                                  <Icon className="w-5 h-5 text-white" />
-                                </div>
-                                <p className="text-sm font-medium text-slate-900">{node.name}</p>
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-sm font-semibold text-slate-700 mb-3">Actions</h4>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        {ACTIONS.map((action) => {
-                          const Icon = action.icon;
-                          return (
-                            <button
-                              key={action.id}
-                              onClick={() => addNode(action)}
-                              className="p-4 rounded-xl border border-slate-200 hover:border-violet-500 hover:bg-violet-50 transition-all text-left"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", action.color)}>
-                                  <Icon className="w-5 h-5 text-white" />
-                                </div>
-                                <p className="text-sm font-medium text-slate-900">{action.name}</p>
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-200">
-              <Button variant="outline" onClick={() => setIsBuilding(false)}>
-                Cancel
-              </Button>
-              <Button 
-                onClick={saveWorkflow}
-                disabled={!newWorkflow.name || !newWorkflow.trigger}
-                className="bg-violet-600 hover:bg-violet-700"
-              >
-                <Save className="w-4 h-4 mr-2" /> Save Workflow
-              </Button>
               {workflows.map((workflow) => (
               <div key={workflow.id} className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all">
                 <div className="flex items-start justify-between mb-4">
@@ -424,16 +289,12 @@ export default function WorkflowAutomation() {
                   <Button size="sm" className="flex-1 bg-violet-600 hover:bg-violet-700">
                     Edit
                   </Button>
-                  </div>
-                  </div>
-                  )}
-                  </div>
-            ))}
-
+                </div>
+              </div>
+              ))}
             </div>
 
-            {/* Templates */}
-          <div className="mt-12">
+            <div className="mt-8">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">Advanced Workflow Templates</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
@@ -496,10 +357,114 @@ export default function WorkflowAutomation() {
         </Tabs>
 
         {isBuilding && (
-          /* Workflow Builder Modal */
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">Build Your Workflow</h2>
+              <Input
+                placeholder="Workflow name (e.g., Lead scoring and routing)"
+                value={newWorkflow.name}
+                onChange={(e) => setNewWorkflow({ ...newWorkflow, name: e.target.value })}
+                className="text-lg p-6 mb-6"
+              />
 
-      {/* Node Configuration Modal */}
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">Choose a Trigger</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {TRIGGERS.map((trigger) => {
+                    const Icon = trigger.icon;
+                    const isSelected = newWorkflow.trigger?.id === trigger.id;
+                    return (
+                      <button
+                        key={trigger.id}
+                        onClick={() => setNewWorkflow({ ...newWorkflow, trigger })}
+                        className={cn(
+                          "p-6 rounded-2xl border-2 text-center transition-all",
+                          isSelected ? "border-violet-500 bg-violet-50 shadow-lg" : "border-slate-200 hover:border-slate-300"
+                        )}
+                      >
+                        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3", trigger.color)}>
+                          <Icon className="w-6 h-6 text-white" />
+                        </div>
+                        <p className="font-medium text-slate-900">{trigger.name}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {newWorkflow.trigger && (
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4">Build Your Workflow</h3>
+                  <div className="mb-6 p-6 bg-slate-50 rounded-2xl max-h-[500px] overflow-y-auto">
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", newWorkflow.trigger.color)}>
+                          <newWorkflow.trigger.icon className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="flex-1 p-3 bg-white rounded-lg border border-slate-200">
+                          <p className="font-medium text-slate-900">{newWorkflow.trigger.name}</p>
+                          <p className="text-sm text-slate-500">When this happens</p>
+                        </div>
+                      </div>
+                      {newWorkflow.nodes.map((node, index) => renderNode(node, index + 1))}
+                      <div className="flex items-center justify-center py-2">
+                        <Plus className="w-5 h-5 text-slate-400" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="text-sm font-semibold text-slate-700 mb-3">Logic & Control</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {LOGIC_NODES.map((node) => {
+                          const Icon = node.icon;
+                          return (
+                            <button key={node.id} onClick={() => addNode(node)} className="p-4 rounded-xl border border-slate-200 hover:border-violet-500 hover:bg-violet-50 transition-all text-left">
+                              <div className="flex items-center gap-3">
+                                <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", node.color)}>
+                                  <Icon className="w-5 h-5 text-white" />
+                                </div>
+                                <p className="text-sm font-medium text-slate-900">{node.name}</p>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-slate-700 mb-3">Actions</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {ACTIONS.map((action) => {
+                          const Icon = action.icon;
+                          return (
+                            <button key={action.id} onClick={() => addNode(action)} className="p-4 rounded-xl border border-slate-200 hover:border-violet-500 hover:bg-violet-50 transition-all text-left">
+                              <div className="flex items-center gap-3">
+                                <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", action.color)}>
+                                  <Icon className="w-5 h-5 text-white" />
+                                </div>
+                                <p className="text-sm font-medium text-slate-900">{action.name}</p>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-200">
+              <Button variant="outline" onClick={() => setIsBuilding(false)}>Cancel</Button>
+              <Button onClick={saveWorkflow} disabled={!newWorkflow.name || !newWorkflow.trigger} className="bg-violet-600 hover:bg-violet-700">
+                <Save className="w-4 h-4 mr-2" /> Save Workflow
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Node Configuration Modal */}
       {configNode && (
         <NodeConfigModal
           node={configNode}
