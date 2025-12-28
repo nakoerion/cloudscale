@@ -27,6 +27,9 @@ import ChartSelector from "@/components/monitoring/ChartSelector";
 import AnomalyDetection from "@/components/monitoring/AnomalyDetection";
 import DistributedTracing from "@/components/monitoring/DistributedTracing";
 import AlertConfiguration from "@/components/monitoring/AlertConfiguration";
+import ChurnPrediction from "@/components/analytics/ChurnPrediction";
+import PerformanceReports from "@/components/analytics/PerformanceReports";
+import EngagementOptimizer from "@/components/analytics/EngagementOptimizer";
 
 const METRICS = [
   { name: "CPU Usage", value: "45%", trend: "down", change: "-2%", status: "healthy", icon: Cpu },
@@ -363,6 +366,20 @@ export default function Monitoring() {
           </div>
           
           <AlertConfiguration />
+        </div>
+
+        {/* AI-Driven Analytics */}
+        <div className="mt-8 space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <Activity className="w-6 h-6 text-indigo-600" />
+            <h2 className="text-2xl font-bold text-slate-900">AI Analytics Insights</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <ChurnPrediction />
+            <PerformanceReports />
+            <EngagementOptimizer />
+          </div>
         </div>
 
         {/* Custom Dashboard */}
