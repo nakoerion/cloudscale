@@ -18,9 +18,9 @@ import ChurnPrediction from "@/components/analytics/ChurnPrediction";
 import PerformanceReports from "@/components/analytics/PerformanceReports";
 import EngagementOptimizer from "@/components/analytics/EngagementOptimizer";
 import AppAnalyticsDashboard from "@/components/analytics/AppAnalyticsDashboard";
-import UserBehaviorInsights from "@/components/analytics/UserBehaviorInsights";
-import PredictiveAnalytics from "@/components/analytics/PredictiveAnalytics";
-import AIRecommendationEngine from "@/components/analytics/AIRecommendationEngine";
+import UserBehaviorInsights from "@/components/analytics/UserBehaviorInsights.jsx";
+import PredictiveAnalytics from "@/components/analytics/PredictiveAnalytics.jsx";
+import AIRecommendationEngine from "@/components/analytics/AIRecommendationEngine.jsx";
 
 export default function Analytics() {
   const [timeRange, setTimeRange] = useState("7d");
