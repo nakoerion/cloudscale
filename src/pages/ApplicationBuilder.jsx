@@ -28,9 +28,13 @@ import {
   Star,
   Search,
   Filter,
-  X
+  X,
+  Github,
+  GitBranch
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import RepositoryConnectModal from "@/components/builder/RepositoryConnectModal";
+import PipelineStatus from "@/components/builder/PipelineStatus";
 
 const STEPS = [
   { id: 1, name: "Project Type", icon: Sparkles },
@@ -38,7 +42,8 @@ const STEPS = [
   { id: 3, name: "Features", icon: Zap },
   { id: 4, name: "Tech Stack", icon: Code },
   { id: 5, name: "Deployment", icon: Cloud },
-  { id: 6, name: "Review", icon: CheckCircle2 }
+  { id: 6, name: "CI/CD", icon: GitBranch },
+  { id: 7, name: "Review", icon: CheckCircle2 }
 ];
 
 const PROJECT_TYPES = [
@@ -219,6 +224,9 @@ export default function ApplicationBuilder() {
   const [favorites, setFavorites] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showRepoModal, setShowRepoModal] = useState(false);
+  const [repository, setRepository] = useState(null);
+  const [showPipeline, setShowPipeline] = useState(false);
 
   useEffect(() => {
     const savedFavorites = localStorage.getItem("template_favorites");
@@ -253,15 +261,21 @@ export default function ApplicationBuilder() {
     mutationFn: (data) => base44.entities.Project.create(data),
     onSuccess: (project) => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-      setCurrentStep(7); // Success step
+      
+      setCurrentStep(8); // Success step
       setTimeout(() => {
         navigate(createPageUrl("ProjectDetails") + `?id=${project.id}`);
       }, 2000);
     }
   });
 
+  const handleRepositoryConnect = (repoData) => {
+    setRepository(repoData);
+    setShowPipeline(true);
+  };
+
   const handleNext = () => {
-    if (currentStep < 6) setCurrentStep(currentStep + 1);
+    if (currentStep < 7) setCurrentStep(currentStep + 1);
   };
 
   const handleBack = () => {
@@ -295,6 +309,7 @@ export default function ApplicationBuilder() {
       case 4: return formData.tech_stack.length > 0;
       case 5: return formData.cloud_provider;
       case 6: return true;
+      case 7: return true;
       default: return false;
     }
   };
@@ -810,8 +825,81 @@ export default function ApplicationBuilder() {
             </div>
           )}
 
-          {/* Step 6: Review */}
+          {/* Step 6: CI/CD Setup */}
           {currentStep === 6 && (
+            <div className="space-y-10 animate-in fade-in duration-500">
+              <div className="text-center">
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-3">
+                  Connect your repository
+                </h2>
+                <p className="text-lg text-slate-600">Enable continuous deployment with GitHub or GitLab</p>
+              </div>
+
+              <div className="max-w-2xl mx-auto space-y-6">
+                {!repository?.connected ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <button
+                        onClick={() => setShowRepoModal(true)}
+                        className="group p-8 rounded-3xl border-2 border-slate-200 hover:border-violet-500 bg-white hover:bg-gradient-to-br hover:from-violet-50 hover:to-indigo-50 transition-all duration-300 hover:shadow-xl"
+                      >
+                        <Github className="w-12 h-12 text-slate-700 mb-4 group-hover:text-violet-600 transition-colors" />
+                        <h3 className="text-xl font-bold text-slate-900 mb-2">GitHub</h3>
+                        <p className="text-sm text-slate-600">Connect your GitHub repository for automated deployments</p>
+                      </button>
+
+                      <button
+                        onClick={() => setShowRepoModal(true)}
+                        className="group p-8 rounded-3xl border-2 border-slate-200 hover:border-violet-500 bg-white hover:bg-gradient-to-br hover:from-violet-50 hover:to-indigo-50 transition-all duration-300 hover:shadow-xl"
+                      >
+                        <GitBranch className="w-12 h-12 text-slate-700 mb-4 group-hover:text-violet-600 transition-colors" />
+                        <h3 className="text-xl font-bold text-slate-900 mb-2">GitLab</h3>
+                        <p className="text-sm text-slate-600">Connect your GitLab repository for automated deployments</p>
+                      </button>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
+                      <div className="flex gap-4">
+                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
+                          <Rocket className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-blue-900 mb-2">Automated CI/CD Pipeline</h4>
+                          <ul className="text-sm text-blue-700 space-y-1">
+                            <li>• Automatic builds on every commit</li>
+                            <li>• Run tests before deployment</li>
+                            <li>• Zero-downtime deployments</li>
+                            <li>• Rollback support</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="space-y-6">
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                        <h4 className="font-semibold text-emerald-900">Repository Connected</h4>
+                      </div>
+                      <div className="space-y-2 text-sm text-emerald-700">
+                        <p><strong>Provider:</strong> {repository.provider}</p>
+                        <p><strong>Repository:</strong> {repository.repository_url}</p>
+                        <p><strong>Branch:</strong> {repository.branch}</p>
+                      </div>
+                    </div>
+
+                    {showPipeline && (
+                      <PipelineStatus repository={repository} />
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Step 7: Review */}
+          {currentStep === 7 && (
             <div className="space-y-8">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">Review your application</h2>
@@ -872,13 +960,24 @@ export default function ApplicationBuilder() {
                   </div>
                 )}
 
+                {repository?.connected && (
+                  <div className="p-6 bg-slate-50 rounded-2xl">
+                    <h3 className="font-semibold text-slate-900 mb-4">CI/CD Pipeline</h3>
+                    <div className="space-y-2 text-sm">
+                      <p><strong>Provider:</strong> {repository.provider}</p>
+                      <p><strong>Repository:</strong> {repository.repository_url}</p>
+                      <p><strong>Branch:</strong> {repository.branch}</p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
                   <div className="flex gap-3">
                     <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-emerald-900 mb-1">Ready to launch!</h4>
                       <p className="text-sm text-emerald-700">
-                        Your application will be created as a draft. You can start building right away and deploy when ready.
+                        Your application will be created and {repository?.connected ? "automatically deployed via CI/CD pipeline" : "ready to deploy when you're ready"}.
                       </p>
                     </div>
                   </div>
@@ -887,8 +986,8 @@ export default function ApplicationBuilder() {
             </div>
           )}
 
-          {/* Step 7: Success */}
-          {currentStep === 7 && (
+          {/* Step 8: Success */}
+          {currentStep === 8 && (
             <div className="text-center py-12">
               <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
                 <Rocket className="w-10 h-10 text-emerald-600" />
@@ -905,7 +1004,7 @@ export default function ApplicationBuilder() {
         </div>
 
         {/* Navigation Buttons */}
-        {currentStep <= 6 && (
+        {currentStep <= 7 && (
           <div className="flex items-center justify-between">
             <Button
               variant="outline"
@@ -917,7 +1016,19 @@ export default function ApplicationBuilder() {
             </Button>
 
             <div className="flex gap-4">
-              {currentStep < 6 ? (
+              {currentStep === 6 && !repository?.connected && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setRepository(null);
+                    handleNext();
+                  }}
+                  className="px-10 py-6 text-base rounded-2xl border-2 hover:shadow-lg transition-all duration-300"
+                >
+                  Skip CI/CD
+                </Button>
+              )}
+              {currentStep < 7 ? (
                 <Button
                   onClick={handleNext}
                   disabled={!canProceed()}
@@ -943,6 +1054,13 @@ export default function ApplicationBuilder() {
             </div>
           </div>
         )}
+
+        <RepositoryConnectModal
+          open={showRepoModal}
+          onClose={() => setShowRepoModal(false)}
+          onConnect={handleRepositoryConnect}
+          projectName={formData.name}
+        />
       </div>
     </div>
   );
