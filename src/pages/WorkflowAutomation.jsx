@@ -295,27 +295,28 @@ export default function WorkflowAutomation() {
             </div>
 
             <div className="mt-8">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Advanced Workflow Templates</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                { name: "Lead Scoring", desc: "Score leads with conditional logic", features: ["If/Else", "API Calls"] },
-                { name: "Auto-Responder", desc: "Send personalized emails with delays", features: ["Delay", "Loops"] },
-                { name: "Data Sync", desc: "Sync records between systems", features: ["Loops", "API Integration"] }
-              ].map((template, i) => (
-                <button
-                  key={i}
-                  className="p-6 bg-white rounded-2xl border border-slate-200 hover:border-violet-500 hover:shadow-lg transition-all text-left"
-                >
-                  <GitBranch className="w-8 h-8 text-violet-600 mb-3" />
-                  <h3 className="font-semibold text-slate-900 mb-2">{template.name}</h3>
-                  <p className="text-sm text-slate-500 mb-3">{template.desc}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {template.features.map((feature, j) => (
-                      <Badge key={j} variant="outline" className="text-xs">{feature}</Badge>
-                    ))}
-                  </div>
-                </button>
-              ))}
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">Advanced Workflow Templates</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  { name: "Lead Scoring", desc: "Score leads with conditional logic", features: ["If/Else", "API Calls"] },
+                  { name: "Auto-Responder", desc: "Send personalized emails with delays", features: ["Delay", "Loops"] },
+                  { name: "Data Sync", desc: "Sync records between systems", features: ["Loops", "API Integration"] }
+                ].map((template, i) => (
+                  <button
+                    key={i}
+                    className="p-6 bg-white rounded-2xl border border-slate-200 hover:border-violet-500 hover:shadow-lg transition-all text-left"
+                  >
+                    <GitBranch className="w-8 h-8 text-violet-600 mb-3" />
+                    <h3 className="font-semibold text-slate-900 mb-2">{template.name}</h3>
+                    <p className="text-sm text-slate-500 mb-3">{template.desc}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {template.features.map((feature, j) => (
+                        <Badge key={j} variant="outline" className="text-xs">{feature}</Badge>
+                      ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           </TabsContent>
 
@@ -464,7 +465,9 @@ export default function WorkflowAutomation() {
           </div>
         )}
 
-        {/* Node Configuration Modal */}
+      </div>
+
+      {/* Node Configuration Modal */}
       {configNode && (
         <NodeConfigModal
           node={configNode}
