@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import OnboardingWizard from "@/components/onboarding/OnboardingWizard";
 import {
   LayoutDashboard,
   Cloud,
@@ -50,10 +52,28 @@ const navigation = [
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
+
+  const { data: onboardingProgress } = useQuery({
+    queryKey: ["onboarding-progress", user?.email],
+    queryFn: async () => {
+      const results = await base44.entities.OnboardingProgress.filter({ 
+        user_email: user.email 
+      });
+      return results[0];
+    },
+    enabled: !!user?.email
+  });
+
+  useEffect(() => {
+    if (user && !onboardingProgress && currentPageName === "Dashboard") {
+      setTimeout(() => setShowOnboarding(true), 1000);
+    }
+  }, [user, onboardingProgress, currentPageName]);
 
   const isFullWidthPage = currentPageName === "ProjectDetails";
 
@@ -204,6 +224,11 @@ export default function Layout({ children, currentPageName }) {
           onClick={() => setSidebarOpen(false)}
         />
       )}
-    </div>
-  );
-}
+
+      <OnboardingWizard 
+        open={showOnboarding} 
+        onClose={() => setShowOnboarding(false)} 
+      />
+      </div>
+      );
+      }
