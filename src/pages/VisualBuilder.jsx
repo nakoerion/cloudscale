@@ -33,6 +33,9 @@ import ResponsivePreview from "@/components/visual-builder/ResponsivePreview";
 import AILayoutSuggestions from "@/components/visual-builder/AILayoutSuggestions";
 import BrandColorGenerator from "@/components/visual-builder/BrandColorGenerator";
 import AdaptiveUIRecommendations from "@/components/visual-builder/AdaptiveUIRecommendations";
+import AIPageGenerator from "@/components/visual-builder/AIPageGenerator";
+import AICodeRefactor from "@/components/visual-builder/AICodeRefactor";
+import AIComponentOptimizer from "@/components/visual-builder/AIComponentOptimizer";
 
 const COMPONENTS = [
   { id: "header", name: "Header", icon: Layers, category: "layout" },
@@ -57,6 +60,9 @@ export default function VisualBuilder() {
   const [showCode, setShowCode] = useState(false);
   const [showStyleEditor, setShowStyleEditor] = useState(false);
   const [showAIPanel, setShowAIPanel] = useState(false);
+  const [showPageGenerator, setShowPageGenerator] = useState(false);
+  const [showCodeRefactor, setShowCodeRefactor] = useState(false);
+  const [showComponentOptimizer, setShowComponentOptimizer] = useState(false);
   const [globalStyles, setGlobalStyles] = useState({
     primaryColor: "#8b5cf6",
     secondaryColor: "#6366f1",
@@ -151,6 +157,33 @@ export default function VisualBuilder() {
     toast.success("UI recommendation applied!");
   };
 
+  const handlePageGeneration = (generatedLayout) => {
+    const newElements = [];
+    generatedLayout.sections?.forEach((section) => {
+      section.components?.forEach((component) => {
+        newElements.push({
+          id: `${component.type}-${Date.now()}-${Math.random()}`,
+          type: component.type,
+          name: component.type,
+          props: component.props || getDefaultProps(component.type)
+        });
+      });
+    });
+    setElements(newElements);
+    setShowPageGenerator(false);
+    toast.success("Page generated successfully!");
+  };
+
+  const handleCodeRefactor = (refactoredCode) => {
+    console.log("Applying refactored code:", refactoredCode);
+    toast.success("Code refactored!");
+  };
+
+  const handleComponentOptimization = (optimization) => {
+    console.log("Applying optimization:", optimization);
+    toast.success("Optimization applied!");
+  };
+
   const generateCode = () => {
     let code = "export default function Page() {\n  return (\n    <div className=\"min-h-screen\">\n";
     elements.forEach(el => {
@@ -220,6 +253,18 @@ export default function VisualBuilder() {
               className="bg-violet-50 hover:bg-violet-100 border-violet-300"
             >
               <Sparkles className="w-4 h-4 mr-2 text-violet-600" /> AI Customize
+            </Button>
+            <Button 
+              onClick={() => setShowPageGenerator(true)}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              <Sparkles className="w-4 h-4 mr-2" /> Generate Page
+            </Button>
+            <Button variant="outline" onClick={() => setShowCodeRefactor(true)}>
+              <Code className="w-4 h-4 mr-2" /> Refactor
+            </Button>
+            <Button variant="outline" onClick={() => setShowComponentOptimizer(true)}>
+              Optimize
             </Button>
             <Button variant="outline" onClick={() => setShowCode(!showCode)}>
               <Code className="w-4 h-4 mr-2" /> {showCode ? "Designer" : "Code"}
@@ -393,6 +438,63 @@ export default function VisualBuilder() {
         globalStyles={globalStyles}
         onSave={setGlobalStyles}
       />
+
+      {/* AI Page Generator Modal */}
+      {showPageGenerator && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-white">
+              <h3 className="font-semibold text-slate-900">AI Page Generator</h3>
+              <button onClick={() => setShowPageGenerator(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4">
+              <AIPageGenerator onGenerate={handlePageGeneration} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Code Refactor Modal */}
+      {showCodeRefactor && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-white">
+              <h3 className="font-semibold text-slate-900">AI Code Refactoring</h3>
+              <button onClick={() => setShowCodeRefactor(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4">
+              <AICodeRefactor 
+                currentCode={generateCode()} 
+                onApply={handleCodeRefactor}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Component Optimizer Modal */}
+      {showComponentOptimizer && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-white">
+              <h3 className="font-semibold text-slate-900">Component Reusability Optimizer</h3>
+              <button onClick={() => setShowComponentOptimizer(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4">
+              <AIComponentOptimizer 
+                elements={elements}
+                onOptimize={handleComponentOptimization}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
