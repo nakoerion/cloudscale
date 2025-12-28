@@ -20,6 +20,10 @@ import {
 import { cn } from "@/lib/utils";
 import TemplateEditor from "@/components/infrastructure/TemplateEditor";
 import TerraformGenerator from "@/components/infrastructure/TerraformGenerator";
+import TenantManager from "@/components/infrastructure/TenantManager";
+import DataIsolationViewer from "@/components/infrastructure/DataIsolationViewer";
+import TenantConfigManager from "@/components/infrastructure/TenantConfigManager";
+import DatabaseSchemaOptimizer from "@/components/infrastructure/DatabaseSchemaOptimizer";
 import { toast } from "sonner";
 
 const DEFAULT_TEMPLATES = [
@@ -136,6 +140,7 @@ export default function Infrastructure() {
   const [editingTemplate, setEditingTemplate] = useState(null);
   const [showEditor, setShowEditor] = useState(false);
   const [showGenerator, setShowGenerator] = useState(false);
+  const [selectedTenant, setSelectedTenant] = useState(null);
 
   const handleSaveTemplate = (template) => {
     const newTemplate = {
@@ -179,8 +184,11 @@ export default function Infrastructure() {
           </Button>
         </div>
 
-        <Tabs defaultValue="templates" className="w-full">
+        <Tabs defaultValue="multi-tenancy" className="w-full">
           <TabsList className="bg-white border border-slate-200">
+            <TabsTrigger value="multi-tenancy">
+              <Server className="w-4 h-4 mr-2" /> Multi-Tenancy
+            </TabsTrigger>
             <TabsTrigger value="templates">
               <FileCode className="w-4 h-4 mr-2" /> IaC Templates
             </TabsTrigger>
@@ -191,6 +199,21 @@ export default function Infrastructure() {
               <Shield className="w-4 h-4 mr-2" /> Security
             </TabsTrigger>
           </TabsList>
+
+          {/* Multi-Tenancy */}
+          <TabsContent value="multi-tenancy" className="mt-6">
+            <div className="space-y-6">
+              <TenantManager />
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <DataIsolationViewer />
+                <div className="space-y-6">
+                  <TenantConfigManager tenantId={selectedTenant} />
+                  <DatabaseSchemaOptimizer />
+                </div>
+              </div>
+            </div>
+          </TabsContent>
 
           {/* Templates */}
           <TabsContent value="templates" className="mt-6">
