@@ -44,6 +44,8 @@ import AIIdeaAnalyzer from "@/components/builder/AIIdeaAnalyzer";
 import CodeGenerator from "@/components/builder/CodeGenerator";
 import TestingValidator from "@/components/builder/TestingValidator";
 import CloudDeploymentWizard from "@/components/builder/CloudDeploymentWizard";
+import PublishWizard from "@/components/builder/PublishWizard";
+import AppAnalyticsDashboard from "@/components/analytics/AppAnalyticsDashboard";
 
 const STEPS = [
   { id: 0, name: "Describe Idea", icon: Lightbulb },
@@ -53,8 +55,7 @@ const STEPS = [
   { id: 4, name: "Generate Code", icon: Code },
   { id: 5, name: "Testing", icon: CheckCircle2 },
   { id: 6, name: "Deployment", icon: Cloud },
-  { id: 7, name: "CI/CD", icon: GitBranch },
-  { id: 8, name: "Review", icon: CheckCircle2 }
+  { id: 7, name: "Publish", icon: Rocket }
 ];
 
 const PROJECT_TYPES = [
@@ -242,6 +243,7 @@ export default function ApplicationBuilder() {
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [appDescription, setAppDescription] = useState("");
   const [generatedCode, setGeneratedCode] = useState(null);
+  const [deploymentResult, setDeploymentResult] = useState(null);
 
   useEffect(() => {
     const savedFavorites = localStorage.getItem("template_favorites");
@@ -277,7 +279,7 @@ export default function ApplicationBuilder() {
     onSuccess: (project) => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       
-      setCurrentStep(9); // Success step
+      setCurrentStep(11); // Success step
       setTimeout(() => {
         navigate(createPageUrl("ProjectDetails") + `?id=${project.id}`);
       }, 2000);
@@ -799,7 +801,10 @@ export default function ApplicationBuilder() {
           {currentStep === 6 && (
             <CloudDeploymentWizard 
               formData={formData}
-              onComplete={() => setCurrentStep(7)}
+              onComplete={(result) => {
+                setDeploymentResult(result);
+                setCurrentStep(7);
+              }}
             />
           )}
 
@@ -964,8 +969,8 @@ export default function ApplicationBuilder() {
             </div>
           )}
 
-          {/* Step 9: Success */}
-          {currentStep === 9 && (
+          {/* Step 11: Success */}
+          {currentStep === 11 && (
             <div className="text-center py-12">
               <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
                 <Rocket className="w-10 h-10 text-emerald-600" />
@@ -982,7 +987,7 @@ export default function ApplicationBuilder() {
         </div>
 
         {/* Navigation Buttons */}
-        {currentStep > 0 && currentStep <= 8 && currentStep !== 4 && currentStep !== 5 && (
+        {currentStep > 0 && currentStep <= 10 && currentStep !== 4 && currentStep !== 5 && currentStep !== 6 && currentStep !== 7 && (
           <div className="flex items-center justify-between">
             <Button
               variant="outline"
@@ -994,7 +999,7 @@ export default function ApplicationBuilder() {
             </Button>
 
             <div className="flex gap-4">
-              {currentStep === 7 && !repository?.connected && (
+              {currentStep === 8 && !repository?.connected && (
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -1006,7 +1011,7 @@ export default function ApplicationBuilder() {
                   Skip CI/CD
                 </Button>
               )}
-              {currentStep < 8 ? (
+              {currentStep < 10 ? (
                 <Button
                   onClick={handleNext}
                   disabled={!canProceed()}
