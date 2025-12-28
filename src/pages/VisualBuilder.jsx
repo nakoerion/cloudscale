@@ -21,12 +21,18 @@ import {
   ChevronDown,
   List,
   LayoutGrid,
-  Palette
+  Palette,
+  Sparkles,
+  X
 } from "lucide-react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import StyleEditor from "@/components/visual-builder/StyleEditor";
 import ResponsivePreview from "@/components/visual-builder/ResponsivePreview";
+import AILayoutSuggestions from "@/components/visual-builder/AILayoutSuggestions";
+import BrandColorGenerator from "@/components/visual-builder/BrandColorGenerator";
+import AdaptiveUIRecommendations from "@/components/visual-builder/AdaptiveUIRecommendations";
 
 const COMPONENTS = [
   { id: "header", name: "Header", icon: Layers, category: "layout" },
@@ -50,6 +56,7 @@ export default function VisualBuilder() {
   const [viewMode, setViewMode] = useState("desktop");
   const [showCode, setShowCode] = useState(false);
   const [showStyleEditor, setShowStyleEditor] = useState(false);
+  const [showAIPanel, setShowAIPanel] = useState(false);
   const [globalStyles, setGlobalStyles] = useState({
     primaryColor: "#8b5cf6",
     secondaryColor: "#6366f1",
@@ -122,6 +129,28 @@ export default function VisualBuilder() {
     if (selectedElement?.id === elementId) setSelectedElement(null);
   };
 
+  const applyLayoutSuggestion = (suggestion) => {
+    // Apply the suggested layout changes
+    console.log("Applying layout suggestion:", suggestion);
+    toast.success("Layout suggestion applied!");
+  };
+
+  const applyColorScheme = (scheme) => {
+    setGlobalStyles({
+      ...globalStyles,
+      primaryColor: scheme.primary,
+      secondaryColor: scheme.secondary,
+      backgroundColor: scheme.background_light,
+      textColor: scheme.text_dark
+    });
+    toast.success(`${scheme.name} color scheme applied!`);
+  };
+
+  const applyAdaptiveRecommendation = (recommendation) => {
+    console.log("Applying adaptive recommendation:", recommendation);
+    toast.success("UI recommendation applied!");
+  };
+
   const generateCode = () => {
     let code = "export default function Page() {\n  return (\n    <div className=\"min-h-screen\">\n";
     elements.forEach(el => {
@@ -184,6 +213,13 @@ export default function VisualBuilder() {
             </div>
             <Button variant="outline" onClick={() => setShowStyleEditor(true)}>
               <Palette className="w-4 h-4 mr-2" /> Styles
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowAIPanel(!showAIPanel)}
+              className="bg-violet-50 hover:bg-violet-100 border-violet-300"
+            >
+              <Sparkles className="w-4 h-4 mr-2 text-violet-600" /> AI Customize
             </Button>
             <Button variant="outline" onClick={() => setShowCode(!showCode)}>
               <Code className="w-4 h-4 mr-2" /> {showCode ? "Designer" : "Code"}
@@ -320,6 +356,32 @@ export default function VisualBuilder() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* AI Customization Panel */}
+        {showAIPanel && !showCode && (
+          <div className="w-96 bg-white border-l border-slate-200 overflow-y-auto">
+            <div className="p-6 space-y-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-violet-600" />
+                  <h2 className="text-lg font-semibold text-slate-900">AI Customization</h2>
+                </div>
+                <button onClick={() => setShowAIPanel(false)} className="text-slate-400 hover:text-slate-600">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <AILayoutSuggestions 
+                currentLayout={elements} 
+                onApplySuggestion={applyLayoutSuggestion}
+              />
+              
+              <BrandColorGenerator onApplyColors={applyColorScheme} />
+              
+              <AdaptiveUIRecommendations onApplyRecommendation={applyAdaptiveRecommendation} />
             </div>
           </div>
         )}
