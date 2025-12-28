@@ -40,6 +40,7 @@ const navigation = [
   { name: "Visual Builder", icon: Paintbrush, href: "VisualBuilder" },
   { name: "Workflow Automation", icon: Workflow, href: "WorkflowAutomation" },
   { name: "Infrastructure", icon: Server, href: "Infrastructure" },
+  { name: "Analytics", icon: Activity, href: "Analytics" },
   { name: "Monitoring", icon: Activity, href: "Monitoring" },
   { name: "Cloud Providers", icon: Cloud, href: "CloudProviders" },
   { name: "DevOps", icon: GitBranch, href: "DevOps" },
