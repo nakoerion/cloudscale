@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +24,11 @@ import {
   Calendar,
   MessageSquare,
   Rocket,
-  CheckCircle2
+  CheckCircle2,
+  Star,
+  Search,
+  Filter,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -69,13 +73,105 @@ const PROJECT_TYPES = [
 ];
 
 const TEMPLATES = [
-  { id: "ecommerce", name: "E-Commerce", icon: ShoppingCart, description: "Online store with payments", features: ["Product catalog", "Shopping cart", "Payment processing", "Order management"] },
-  { id: "crm", name: "CRM", icon: Users, description: "Customer relationship management", features: ["Contact management", "Sales pipeline", "Email integration", "Reporting"] },
-  { id: "blog", name: "Blog/CMS", icon: FileText, description: "Content management system", features: ["Content editor", "SEO optimization", "Comments", "Media library"] },
-  { id: "booking", name: "Booking System", icon: Calendar, description: "Appointments and scheduling", features: ["Calendar", "Availability", "Notifications", "Payments"] },
-  { id: "social", name: "Social Platform", icon: MessageSquare, description: "Community and social features", features: ["User profiles", "Feed", "Messaging", "Notifications"] },
-  { id: "dashboard", name: "Analytics Dashboard", icon: Database, description: "Data visualization and reporting", features: ["Charts", "KPIs", "Real-time data", "Exports"] },
-  { id: "blank", name: "Blank Canvas", icon: Sparkles, description: "Start from scratch", features: [] }
+  { 
+    id: "ecommerce", 
+    name: "E-Commerce", 
+    icon: ShoppingCart, 
+    description: "Online store with payments", 
+    features: ["Product catalog", "Shopping cart", "Payment processing", "Order management"],
+    category: "business",
+    tags: ["store", "payments", "products", "retail"],
+    preview: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop"
+  },
+  { 
+    id: "crm", 
+    name: "CRM", 
+    icon: Users, 
+    description: "Customer relationship management", 
+    features: ["Contact management", "Sales pipeline", "Email integration", "Reporting"],
+    category: "business",
+    tags: ["sales", "customers", "crm", "leads"],
+    preview: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop"
+  },
+  { 
+    id: "blog", 
+    name: "Blog/CMS", 
+    icon: FileText, 
+    description: "Content management system", 
+    features: ["Content editor", "SEO optimization", "Comments", "Media library"],
+    category: "content",
+    tags: ["blog", "cms", "content", "publishing"],
+    preview: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600&h=400&fit=crop"
+  },
+  { 
+    id: "booking", 
+    name: "Booking System", 
+    icon: Calendar, 
+    description: "Appointments and scheduling", 
+    features: ["Calendar", "Availability", "Notifications", "Payments"],
+    category: "business",
+    tags: ["appointments", "scheduling", "calendar", "reservations"],
+    preview: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=600&h=400&fit=crop"
+  },
+  { 
+    id: "social", 
+    name: "Social Platform", 
+    icon: MessageSquare, 
+    description: "Community and social features", 
+    features: ["User profiles", "Feed", "Messaging", "Notifications"],
+    category: "social",
+    tags: ["social", "community", "messaging", "networking"],
+    preview: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&h=400&fit=crop"
+  },
+  { 
+    id: "dashboard", 
+    name: "Analytics Dashboard", 
+    icon: Database, 
+    description: "Data visualization and reporting", 
+    features: ["Charts", "KPIs", "Real-time data", "Exports"],
+    category: "analytics",
+    tags: ["analytics", "dashboard", "data", "reporting"],
+    preview: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop"
+  },
+  { 
+    id: "portfolio", 
+    name: "Portfolio", 
+    icon: Palette, 
+    description: "Showcase your work professionally", 
+    features: ["Gallery", "Projects", "Contact form", "Testimonials"],
+    category: "content",
+    tags: ["portfolio", "showcase", "design", "creative"],
+    preview: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&h=400&fit=crop"
+  },
+  { 
+    id: "saas", 
+    name: "SaaS Platform", 
+    icon: Cloud, 
+    description: "Software as a service application", 
+    features: ["Multi-tenancy", "Subscriptions", "Billing", "Admin panel"],
+    category: "business",
+    tags: ["saas", "subscription", "software", "enterprise"],
+    preview: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop"
+  },
+  { 
+    id: "blank", 
+    name: "Blank Canvas", 
+    icon: Sparkles, 
+    description: "Start from scratch", 
+    features: [],
+    category: "starter",
+    tags: ["blank", "custom", "scratch"],
+    preview: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=600&h=400&fit=crop"
+  }
+];
+
+const CATEGORIES = [
+  { value: "all", label: "All Templates", icon: "🎨" },
+  { value: "business", label: "Business", icon: "💼" },
+  { value: "content", label: "Content", icon: "📝" },
+  { value: "social", label: "Social", icon: "👥" },
+  { value: "analytics", label: "Analytics", icon: "📊" },
+  { value: "starter", label: "Starter", icon: "⚡" }
 ];
 
 const FEATURES = [
@@ -119,6 +215,36 @@ export default function ApplicationBuilder() {
     cloud_provider: "aws",
     deployment_region: "us-east-1"
   });
+  
+  const [favorites, setFavorites] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem("template_favorites");
+    if (savedFavorites) {
+      setFavorites(JSON.parse(savedFavorites));
+    }
+  }, []);
+
+  const toggleFavorite = (templateId) => {
+    const newFavorites = favorites.includes(templateId)
+      ? favorites.filter(id => id !== templateId)
+      : [...favorites, templateId];
+    setFavorites(newFavorites);
+    localStorage.setItem("template_favorites", JSON.stringify(newFavorites));
+  };
+
+  const filteredTemplates = TEMPLATES.filter(template => {
+    const matchesCategory = selectedCategory === "all" || template.category === selectedCategory;
+    const matchesSearch = searchQuery === "" || 
+      template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
+
+  const favoriteTemplates = TEMPLATES.filter(t => favorites.includes(t.id));
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -328,7 +454,7 @@ export default function ApplicationBuilder() {
 
           {/* Step 2: Template Selection */}
           {currentStep === 2 && (
-            <div className="space-y-10 animate-in fade-in duration-500">
+            <div className="space-y-8 animate-in fade-in duration-500">
               <div className="text-center">
                 <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-3">
                   Choose a template
@@ -336,50 +462,183 @@ export default function ApplicationBuilder() {
                 <p className="text-lg text-slate-600">Start with a pre-built template or from scratch</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {TEMPLATES.map((template) => {
-                  const TemplateIcon = template.icon;
-                  return (
+              {/* Search and Filters */}
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Input
+                    placeholder="Search templates by name, description, or tags..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-12 pr-10 py-6 text-base rounded-2xl border-2 focus:border-violet-400"
+                  />
+                  {searchQuery && (
                     <button
-                      key={template.id}
-                      onClick={() => setFormData({ ...formData, template: template.id })}
-                      className={cn(
-                        "group p-6 rounded-3xl border-2 text-left transition-all duration-500 hover:scale-105",
-                        formData.template === template.id
-                          ? "border-violet-500 bg-gradient-to-br from-violet-50 to-indigo-50 shadow-2xl shadow-violet-200/50"
-                          : "border-slate-200 bg-white hover:border-violet-300 hover:shadow-xl"
-                      )}
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                     >
-                      <div className={cn(
-                        "w-16 h-16 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300",
-                        formData.template === template.id
-                          ? "bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg"
-                          : "bg-gradient-to-br from-violet-100 to-indigo-100 group-hover:from-violet-200 group-hover:to-indigo-200"
-                      )}>
-                        <TemplateIcon className={cn(
-                          "w-8 h-8 transition-all duration-300",
-                          formData.template === template.id ? "text-white" : "text-violet-600"
-                        )} />
-                      </div>
-                      <h3 className="text-xl font-bold text-slate-900 mb-2">{template.name}</h3>
-                      <p className="text-sm text-slate-600 mb-4 leading-relaxed">{template.description}</p>
-                      {template.features.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {template.features.slice(0, 2).map((feature, i) => (
-                            <span key={i} className="text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-700 font-medium">
-                              {feature}
-                            </span>
-                          ))}
-                          {template.features.length > 2 && (
-                            <span className="text-xs px-3 py-1.5 bg-violet-100 text-violet-700 rounded-full font-semibold">
-                              +{template.features.length - 2} more
-                            </span>
-                          )}
-                        </div>
-                      )}
+                      <X className="w-5 h-5" />
                     </button>
-                  );
-                })}
+                  )}
+                </div>
+              </div>
+
+              {/* Category Filters */}
+              <div className="flex items-center gap-3 overflow-x-auto pb-2">
+                {CATEGORIES.map((category) => (
+                  <button
+                    key={category.value}
+                    onClick={() => setSelectedCategory(category.value)}
+                    className={cn(
+                      "flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 font-semibold text-sm whitespace-nowrap transition-all duration-300",
+                      selectedCategory === category.value
+                        ? "border-violet-500 bg-gradient-to-r from-violet-50 to-indigo-50 text-violet-700 shadow-md"
+                        : "border-slate-200 bg-white text-slate-600 hover:border-violet-300"
+                    )}
+                  >
+                    <span className="text-lg">{category.icon}</span>
+                    {category.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Favorites Section */}
+              {favoriteTemplates.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
+                    <h3 className="text-lg font-bold text-slate-900">Favorite Templates</h3>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {favoriteTemplates.map((template) => {
+                      const TemplateIcon = template.icon;
+                      return (
+                        <button
+                          key={template.id}
+                          onClick={() => setFormData({ ...formData, template: template.id })}
+                          className={cn(
+                            "group relative rounded-3xl border-2 text-left transition-all duration-500 hover:scale-105 overflow-hidden",
+                            formData.template === template.id
+                              ? "border-violet-500 shadow-2xl shadow-violet-200/50"
+                              : "border-slate-200 bg-white hover:border-violet-300 hover:shadow-xl"
+                          )}
+                        >
+                          <div className="relative h-36 overflow-hidden">
+                            <img 
+                              src={template.preview} 
+                              alt={template.name}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleFavorite(template.id);
+                              }}
+                              className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all"
+                            >
+                              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                            </button>
+                          </div>
+                          <div className="p-5">
+                            <div className="flex items-center gap-2 mb-2">
+                              <TemplateIcon className="w-5 h-5 text-violet-600" />
+                              <h3 className="text-lg font-bold text-slate-900">{template.name}</h3>
+                            </div>
+                            <p className="text-sm text-slate-600 mb-3">{template.description}</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {template.tags.slice(0, 3).map((tag, i) => (
+                                <span key={i} className="text-xs px-2 py-1 bg-slate-100 text-slate-600 rounded-md">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* All Templates */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-slate-900">
+                  {selectedCategory === "all" ? "All Templates" : CATEGORIES.find(c => c.value === selectedCategory)?.label}
+                  {searchQuery && ` (${filteredTemplates.length} results)`}
+                </h3>
+                {filteredTemplates.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Filter className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                    <p className="text-slate-500">No templates found matching your criteria</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {filteredTemplates.map((template) => {
+                      const TemplateIcon = template.icon;
+                      const isFavorite = favorites.includes(template.id);
+                      return (
+                        <button
+                          key={template.id}
+                          onClick={() => setFormData({ ...formData, template: template.id })}
+                          className={cn(
+                            "group relative rounded-3xl border-2 text-left transition-all duration-500 hover:scale-105 overflow-hidden",
+                            formData.template === template.id
+                              ? "border-violet-500 shadow-2xl shadow-violet-200/50"
+                              : "border-slate-200 bg-white hover:border-violet-300 hover:shadow-xl"
+                          )}
+                        >
+                          <div className="relative h-36 overflow-hidden">
+                            <img 
+                              src={template.preview} 
+                              alt={template.name}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleFavorite(template.id);
+                              }}
+                              className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white hover:scale-110 transition-all"
+                            >
+                              <Star className={cn(
+                                "w-4 h-4 transition-all",
+                                isFavorite 
+                                  ? "text-amber-500 fill-amber-500" 
+                                  : "text-slate-400"
+                              )} />
+                            </button>
+                            {formData.template === template.id && (
+                              <div className="absolute top-3 left-3 px-3 py-1.5 bg-violet-600 text-white text-xs font-semibold rounded-full flex items-center gap-1">
+                                <Check className="w-3 h-3" /> Selected
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-5">
+                            <div className="flex items-center gap-2 mb-2">
+                              <TemplateIcon className="w-5 h-5 text-violet-600" />
+                              <h3 className="text-lg font-bold text-slate-900">{template.name}</h3>
+                            </div>
+                            <p className="text-sm text-slate-600 mb-3 line-clamp-2">{template.description}</p>
+                            <div className="flex flex-wrap gap-1.5 mb-3">
+                              {template.tags.slice(0, 3).map((tag, i) => (
+                                <span key={i} className="text-xs px-2 py-1 bg-slate-100 text-slate-600 rounded-md">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                            {template.features.length > 0 && (
+                              <div className="text-xs text-slate-500">
+                                {template.features.length} features included
+                              </div>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           )}
