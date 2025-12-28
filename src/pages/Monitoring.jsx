@@ -30,6 +30,10 @@ import AlertConfiguration from "@/components/monitoring/AlertConfiguration";
 import ChurnPrediction from "@/components/analytics/ChurnPrediction";
 import PerformanceReports from "@/components/analytics/PerformanceReports";
 import EngagementOptimizer from "@/components/analytics/EngagementOptimizer";
+import AIAnomalyDetection from "@/components/monitoring/AIAnomalyDetection";
+import ResourceExhaustionPredictor from "@/components/monitoring/ResourceExhaustionPredictor";
+import InfrastructureEventCorrelation from "@/components/monitoring/InfrastructureEventCorrelation";
+import AIInfrastructureRecommendations from "@/components/monitoring/AIInfrastructureRecommendations";
 
 const METRICS = [
   { name: "CPU Usage", value: "45%", trend: "down", change: "-2%", status: "healthy", icon: Cpu },
@@ -350,6 +354,23 @@ export default function Monitoring() {
                 </Button>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* AI Infrastructure Intelligence */}
+        <div className="mt-8 space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <Activity className="w-6 h-6 text-purple-600" />
+            <h2 className="text-2xl font-bold text-slate-900">AI Infrastructure Intelligence</h2>
+          </div>
+          
+          <div className="space-y-6">
+            <AIAnomalyDetection />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <ResourceExhaustionPredictor />
+              <InfrastructureEventCorrelation />
+            </div>
+            <AIInfrastructureRecommendations />
           </div>
         </div>
 
