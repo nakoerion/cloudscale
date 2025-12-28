@@ -20,10 +20,13 @@ import {
   ChevronRight,
   ChevronDown,
   List,
-  LayoutGrid
+  LayoutGrid,
+  Palette
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import StyleEditor from "@/components/visual-builder/StyleEditor";
+import ResponsivePreview from "@/components/visual-builder/ResponsivePreview";
 
 const COMPONENTS = [
   { id: "header", name: "Header", icon: Layers, category: "layout" },
@@ -46,6 +49,16 @@ export default function VisualBuilder() {
   const [selectedElement, setSelectedElement] = useState(null);
   const [viewMode, setViewMode] = useState("desktop");
   const [showCode, setShowCode] = useState(false);
+  const [showStyleEditor, setShowStyleEditor] = useState(false);
+  const [globalStyles, setGlobalStyles] = useState({
+    primaryColor: "#8b5cf6",
+    secondaryColor: "#6366f1",
+    backgroundColor: "#ffffff",
+    textColor: "#1e293b",
+    fontFamily: "Inter, sans-serif",
+    borderRadius: "8px",
+    logo: ""
+  });
 
   const addElement = (component) => {
     const newElement = {
@@ -169,6 +182,9 @@ export default function VisualBuilder() {
               {viewMode === "tablet" && "768px"}
               {viewMode === "desktop" && "1280px"}
             </div>
+            <Button variant="outline" onClick={() => setShowStyleEditor(true)}>
+              <Palette className="w-4 h-4 mr-2" /> Styles
+            </Button>
             <Button variant="outline" onClick={() => setShowCode(!showCode)}>
               <Code className="w-4 h-4 mr-2" /> {showCode ? "Designer" : "Code"}
             </Button>
@@ -218,22 +234,27 @@ export default function VisualBuilder() {
         </div>
 
         {/* Canvas */}
-        <div className="flex-1 overflow-y-auto bg-slate-100 p-8">
+        <div className="flex-1 overflow-hidden bg-slate-100">
           {showCode ? (
-            <div className="bg-slate-900 rounded-xl p-6 max-w-4xl mx-auto">
-              <pre className="text-sm text-slate-100 overflow-x-auto">
-                <code>{generateCode()}</code>
-              </pre>
+            <div className="p-8 h-full overflow-y-auto">
+              <div className="bg-slate-900 rounded-xl p-6 max-w-4xl mx-auto">
+                <pre className="text-sm text-slate-100 overflow-x-auto">
+                  <code>{generateCode()}</code>
+                </pre>
+              </div>
             </div>
           ) : (
-            <div className={cn(
-              "bg-white rounded-xl shadow-lg mx-auto min-h-[600px] transition-all duration-300",
-              viewMode === "mobile" && "max-w-[375px]",
-              viewMode === "tablet" && "max-w-[768px]",
-              viewMode === "desktop" && "max-w-[1280px]"
-            )}>
+            <ResponsivePreview 
+              device={viewMode} 
+              onDeviceChange={setViewMode}
+              globalStyles={{
+                backgroundColor: globalStyles.backgroundColor,
+                color: globalStyles.textColor,
+                fontFamily: globalStyles.fontFamily
+              }}
+            >
               {elements.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-[600px] text-center">
+                <div className="flex flex-col items-center justify-center h-full text-center p-8">
                   <Layers className="w-16 h-16 text-slate-300 mb-4" />
                   <h3 className="text-lg font-semibold text-slate-900 mb-2">Start Building</h3>
                   <p className="text-slate-500">Drag components from the left panel to begin</p>
@@ -251,7 +272,7 @@ export default function VisualBuilder() {
                           : "border-transparent hover:border-slate-300"
                       )}
                     >
-                      {renderElement(element)}
+                      {renderElement(element, globalStyles)}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -265,7 +286,7 @@ export default function VisualBuilder() {
                   ))}
                 </div>
               )}
-            </div>
+            </ResponsivePreview>
           )}
         </div>
 
@@ -303,11 +324,18 @@ export default function VisualBuilder() {
           </div>
         )}
       </div>
+
+      <StyleEditor
+        open={showStyleEditor}
+        onClose={() => setShowStyleEditor(false)}
+        globalStyles={globalStyles}
+        onSave={setGlobalStyles}
+      />
     </div>
   );
 }
 
-function renderElement(element) {
+function renderElement(element, globalStyles = {}) {
   const { type, props } = element;
 
   switch(type) {
@@ -336,7 +364,13 @@ function renderElement(element) {
     case "button":
       return (
         <div className="p-4">
-          <button className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 font-medium">
+          <button 
+            className="px-6 py-3 text-white rounded-lg font-medium hover:opacity-90"
+            style={{ 
+              backgroundColor: globalStyles.primaryColor || "#8b5cf6",
+              borderRadius: globalStyles.borderRadius || "8px"
+            }}
+          >
             {props.text}
           </button>
         </div>
