@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Plus, 
@@ -26,10 +27,16 @@ import {
   Repeat,
   Filter,
   Link2,
-  ArrowDownRight
+  ArrowDownRight,
+  Brain,
+  Activity
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import NodeConfigModal from "@/components/workflow/NodeConfigModal";
+import AIWorkflowAnalyzer from "@/components/workflow/AIWorkflowAnalyzer";
+import AIAutomationBuilder from "@/components/workflow/AIAutomationBuilder";
+import UserBehaviorPatterns from "@/components/workflow/UserBehaviorPatterns";
 
 const TRIGGERS = [
   { id: "form_submit", name: "Form Submitted", icon: Zap, color: "bg-violet-500" },
@@ -76,6 +83,7 @@ export default function WorkflowAutomation() {
     nodes: []
   });
   const [configNode, setConfigNode] = useState(null);
+  const [activeTab, setActiveTab] = useState("workflows");
 
   const startNewWorkflow = () => {
     setNewWorkflow({ name: "", trigger: null, nodes: [] });
@@ -136,6 +144,18 @@ export default function WorkflowAutomation() {
     }
   };
 
+  const handleCreateWorkflow = (workflow) => {
+    setWorkflows([
+      ...workflows,
+      { ...workflow, id: Date.now(), active: false, nodes: workflow.nodes || [] }
+    ]);
+    toast.success(`Workflow "${workflow.name}" created!`);
+  };
+
+  const handleCreateAutomation = (pattern) => {
+    toast.success("Automation created from pattern!");
+  };
+
   const renderNode = (node, index, branch = null) => {
     const Icon = node.icon;
     const isCondition = node.category === "logic" && node.id === "condition";
@@ -193,17 +213,39 @@ export default function WorkflowAutomation() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Workflow Automation</h1>
-            <p className="text-slate-500">Build complex workflows with conditional logic, loops, and API integrations</p>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2 flex items-center gap-3">
+              Workflow Automation
+              <Badge className="bg-purple-100 text-purple-700">
+                <Brain className="w-3 h-3 mr-1" /> AI-Powered
+              </Badge>
+            </h1>
+            <p className="text-slate-500">Build intelligent workflows with AI analysis and automation</p>
           </div>
           <Button onClick={startNewWorkflow} className="bg-violet-600 hover:bg-violet-700">
             <Plus className="w-4 h-4 mr-2" /> New Workflow
           </Button>
         </div>
 
-        {isBuilding ? (
-          /* Workflow Builder */
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8">
+        {/* Tabs */}
+        <Tabs value={isBuilding ? "builder" : activeTab} onValueChange={setActiveTab} className="mb-6">
+          <TabsList className="bg-white border border-slate-200 p-1 rounded-xl">
+            <TabsTrigger value="workflows" className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
+              <GitBranch className="w-4 h-4 mr-2" /> My Workflows
+            </TabsTrigger>
+            <TabsTrigger value="analysis" className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700">
+              <Activity className="w-4 h-4 mr-2" /> AI Analysis
+            </TabsTrigger>
+            <TabsTrigger value="builder" className="data-[state=active]:bg-purple-100 data-[state=active]:text-purple-700">
+              <Zap className="w-4 h-4 mr-2" /> AI Builder
+            </TabsTrigger>
+            <TabsTrigger value="patterns" className="data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-700">
+              <Brain className="w-4 h-4 mr-2" /> Behavior Patterns
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="workflows">
+            {/* Workflow List */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-slate-900 mb-4">Build Your Workflow</h2>
               <Input
@@ -338,12 +380,7 @@ export default function WorkflowAutomation() {
               >
                 <Save className="w-4 h-4 mr-2" /> Save Workflow
               </Button>
-            </div>
-          </div>
-        ) : (
-          /* Workflow List */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {workflows.map((workflow) => (
+              {workflows.map((workflow) => (
               <div key={workflow.id} className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all">
                 <div className="flex items-start justify-between mb-4">
                   <div>
@@ -387,14 +424,15 @@ export default function WorkflowAutomation() {
                   <Button size="sm" className="flex-1 bg-violet-600 hover:bg-violet-700">
                     Edit
                   </Button>
-                </div>
-              </div>
+                  </div>
+                  </div>
+                  )}
+                  </div>
             ))}
-          </div>
-        )}
 
-        {/* Templates */}
-        {!isBuilding && (
+            </div>
+
+            {/* Templates */}
           <div className="mt-12">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">Advanced Workflow Templates</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -418,9 +456,48 @@ export default function WorkflowAutomation() {
                 </button>
               ))}
             </div>
-          </div>
-        )}
-      </div>
+          </TabsContent>
+
+          <TabsContent value="analysis">
+            <AIWorkflowAnalyzer 
+              workflow={workflows[0] || { name: "Sample Workflow" }}
+              analytics={{
+                execution_count: 1247,
+                avg_execution_time: 45,
+                success_rate: 94.5
+              }}
+            />
+          </TabsContent>
+
+          <TabsContent value="builder">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <AIAutomationBuilder onCreateWorkflow={handleCreateWorkflow} />
+              <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border border-purple-200 p-6">
+                <h3 className="font-semibold text-slate-900 mb-4">AI Recommendations</h3>
+                <div className="space-y-3">
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="font-medium text-slate-900 mb-1">Auto-assign Support Tickets</p>
+                    <p className="text-sm text-slate-600 mb-2">Based on sentiment and category</p>
+                    <Badge className="bg-emerald-100 text-emerald-700">High Impact</Badge>
+                  </div>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="font-medium text-slate-900 mb-1">Onboarding Automation</p>
+                    <p className="text-sm text-slate-600 mb-2">Guide new users through setup</p>
+                    <Badge className="bg-blue-100 text-blue-700">Medium Impact</Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="patterns">
+            <UserBehaviorPatterns onCreateAutomation={handleCreateAutomation} />
+          </TabsContent>
+        </Tabs>
+
+        {isBuilding && (
+          /* Workflow Builder Modal */
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8">
 
       {/* Node Configuration Modal */}
       {configNode && (
