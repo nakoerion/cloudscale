@@ -260,7 +260,15 @@ export default function DevOps() {
                 <p className="text-sm text-slate-600 mb-4">
                   Automate infrastructure deployment with Terraform templates for multi-cloud environments.
                 </p>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    import("sonner").then(({ toast }) => {
+                      toast.info("Opening Terraform templates...");
+                    });
+                  }}
+                >
                   View Templates
                 </Button>
               </div>
@@ -278,7 +286,15 @@ export default function DevOps() {
                 <p className="text-sm text-slate-600 mb-4">
                   Build and manage container images with integrated Docker support and registry.
                 </p>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    import("sonner").then(({ toast }) => {
+                      toast.info("Opening Docker registry...");
+                    });
+                  }}
+                >
                   Manage Images
                 </Button>
               </div>
@@ -296,7 +312,15 @@ export default function DevOps() {
                 <p className="text-sm text-slate-600 mb-4">
                   Deploy and scale applications with Kubernetes across multiple cloud environments.
                 </p>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    import("sonner").then(({ toast }) => {
+                      toast.info("Opening Kubernetes dashboard...");
+                    });
+                  }}
+                >
                   Manage Clusters
                 </Button>
               </div>
@@ -314,7 +338,15 @@ export default function DevOps() {
                 <p className="text-sm text-slate-600 mb-4">
                   Real-time monitoring with Prometheus metrics and Grafana dashboards.
                 </p>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    import("sonner").then(({ toast }) => {
+                      toast.info("Opening Grafana dashboard...");
+                    });
+                  }}
+                >
                   Open Grafana
                 </Button>
               </div>
@@ -332,7 +364,15 @@ export default function DevOps() {
                 <p className="text-sm text-slate-600 mb-4">
                   Centralized logging with Elasticsearch for log aggregation and analysis.
                 </p>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    import("sonner").then(({ toast }) => {
+                      toast.info("Opening Kibana logs...");
+                    });
+                  }}
+                >
                   View Logs
                 </Button>
               </div>
@@ -350,7 +390,15 @@ export default function DevOps() {
                 <p className="text-sm text-slate-600 mb-4">
                   Automated backups to cloud storage with defined RPO and RTO objectives.
                 </p>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    import("sonner").then(({ toast }) => {
+                      toast.info("Opening backup configuration...");
+                    });
+                  }}
+                >
                   Configure Backups
                 </Button>
               </div>

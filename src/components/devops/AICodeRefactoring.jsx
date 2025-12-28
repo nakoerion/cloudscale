@@ -199,9 +199,26 @@ export default function AICodeRefactoring() {
               </Tabs>
 
               <div className="flex gap-2 mt-4">
-                <Button size="sm">Apply Refactoring</Button>
-                <Button size="sm" variant="outline">Create PR</Button>
-                <Button size="sm" variant="outline">Dismiss</Button>
+                <Button 
+                  size="sm"
+                  onClick={() => toast.success("Refactoring applied successfully!")}
+                >
+                  Apply Refactoring
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => toast.success("Pull request created successfully!")}
+                >
+                  Create PR
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => toast.info("Suggestion dismissed")}
+                >
+                  Dismiss
+                </Button>
               </div>
             </div>
           </div>

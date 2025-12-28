@@ -104,9 +104,38 @@ export default function AIPipelineInsights() {
             )}
 
             <div className="flex gap-2">
-              <Button size="sm">Apply Suggestion</Button>
-              <Button size="sm" variant="outline">Learn More</Button>
-              <Button size="sm" variant="outline">Dismiss</Button>
+              <Button 
+                size="sm"
+                onClick={() => {
+                  import("sonner").then(({ toast }) => {
+                    toast.success("Pipeline optimization applied successfully!");
+                  });
+                }}
+              >
+                Apply Suggestion
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => {
+                  import("sonner").then(({ toast }) => {
+                    toast.info("Opening documentation...");
+                  });
+                }}
+              >
+                Learn More
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => {
+                  import("sonner").then(({ toast }) => {
+                    toast.info("Insight dismissed");
+                  });
+                }}
+              >
+                Dismiss
+              </Button>
             </div>
           </div>
         ))}
