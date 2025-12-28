@@ -16,6 +16,8 @@ import {
 import PipelineCard from "@/components/dashboard/PipelineCard";
 import DeploymentTimeline from "@/components/dashboard/DeploymentTimeline";
 import CreatePipelineModal from "@/components/modals/CreatePipelineModal";
+import PipelineStageFlow from "@/components/devops/PipelineStageFlow";
+import DeploymentTimelineEnhanced from "@/components/devops/DeploymentTimeline";
 import MetricCard from "@/components/dashboard/MetricCard";
 import DNSManager from "@/components/monitoring/DNSManager";
 import CDNSettings from "@/components/monitoring/CDNSettings";
@@ -145,6 +147,9 @@ export default function DevOps() {
 
           <TabsContent value="pipelines">
             <div className="mb-6 space-y-6">
+              {pipelines.length > 0 && (
+                <PipelineStageFlow pipeline={pipelines[0]} />
+              )}
               <AIPipelineInsights />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <DeploymentFailurePrediction />
@@ -186,6 +191,9 @@ export default function DevOps() {
           </TabsContent>
 
           <TabsContent value="deployments">
+            <div className="space-y-6 mb-6">
+              <DeploymentTimelineEnhanced />
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <DeploymentTimeline deployments={deployments} />
               
