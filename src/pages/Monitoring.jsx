@@ -17,7 +17,8 @@ import {
   RefreshCw,
   Plus,
   Trash2,
-  LayoutGrid
+  LayoutGrid,
+  Shield
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Heatmap from "@/components/monitoring/Heatmap";
