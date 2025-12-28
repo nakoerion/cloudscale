@@ -42,6 +42,7 @@ const navigation = [
   { name: "Cloud Providers", icon: Cloud, href: "CloudProviders" },
   { name: "DevOps", icon: GitBranch, href: "DevOps" },
   { name: "Integrations", icon: Zap, href: "Integrations" },
+  { name: "Billing", icon: Shield, href: "Billing" },
   { name: "Role Management", icon: Shield, href: "RoleManagement" },
   { name: "SLA Contracts", icon: Shield, href: "SLAContracts" }
 ];
