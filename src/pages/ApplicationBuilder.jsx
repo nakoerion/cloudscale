@@ -174,73 +174,92 @@ export default function ApplicationBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50">
-      <div className="max-w-6xl mx-auto px-6 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-violet-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
         {/* Header */}
-        <div className="text-center mb-12">
-          <Badge className="bg-violet-100 text-violet-700 mb-4">
-            <Sparkles className="w-3 h-3 mr-1" /> Application Builder
-          </Badge>
-          <h1 className="text-4xl font-bold text-slate-900 mb-3">
-            Build Your Application
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-violet-200 mb-6 shadow-lg">
+            <Sparkles className="w-4 h-4 text-violet-600 animate-pulse" />
+            <span className="text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+              Application Builder
+            </span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 mb-4 leading-tight">
+            Build Your Dream<br />
+            <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              Application
+            </span>
           </h1>
-          <p className="text-lg text-slate-500">
-            Create your next project in minutes with our guided builder
+          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+            Create production-ready applications in minutes with our intelligent guided builder
           </p>
         </div>
 
         {/* Progress Steps */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between max-w-4xl mx-auto">
-            {STEPS.map((step, index) => {
-              const StepIcon = step.icon;
-              const isActive = currentStep === step.id;
-              const isCompleted = currentStep > step.id;
-              
-              return (
-                <div key={step.id} className="flex items-center flex-1">
-                  <div className="flex flex-col items-center flex-1">
-                    <div className={cn(
-                      "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 mb-2",
-                      isCompleted && "bg-violet-600 text-white",
-                      isActive && "bg-violet-100 text-violet-600 ring-4 ring-violet-100",
-                      !isActive && !isCompleted && "bg-slate-100 text-slate-400"
-                    )}>
-                      {isCompleted ? (
-                        <Check className="w-6 h-6" />
-                      ) : (
-                        <StepIcon className="w-6 h-6" />
-                      )}
+        <div className="mb-16">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-6 max-w-5xl mx-auto">
+            <div className="flex items-center justify-between">
+              {STEPS.map((step, index) => {
+                const StepIcon = step.icon;
+                const isActive = currentStep === step.id;
+                const isCompleted = currentStep > step.id;
+                
+                return (
+                  <div key={step.id} className="flex items-center flex-1">
+                    <div className="flex flex-col items-center flex-1 relative">
+                      <div className={cn(
+                        "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 mb-3 relative z-10",
+                        isCompleted && "bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/50 scale-110",
+                        isActive && "bg-gradient-to-br from-violet-100 to-indigo-100 text-violet-600 ring-4 ring-violet-200 shadow-xl scale-110",
+                        !isActive && !isCompleted && "bg-slate-100 text-slate-400"
+                      )}>
+                        {isCompleted ? (
+                          <Check className="w-7 h-7" />
+                        ) : (
+                          <StepIcon className="w-7 h-7" />
+                        )}
+                      </div>
+                      <span className={cn(
+                        "text-xs font-semibold text-center transition-all duration-300",
+                        isActive && "text-violet-700 scale-110",
+                        isCompleted && "text-slate-700",
+                        !isActive && !isCompleted && "text-slate-400"
+                      )}>
+                        {step.name}
+                      </span>
                     </div>
-                    <span className={cn(
-                      "text-sm font-medium text-center",
-                      isActive && "text-violet-600",
-                      isCompleted && "text-slate-900",
-                      !isActive && !isCompleted && "text-slate-400"
-                    )}>
-                      {step.name}
-                    </span>
+                    {index < STEPS.length - 1 && (
+                      <div className={cn(
+                        "h-1 flex-1 mx-2 rounded-full transition-all duration-500 relative top-[-20px]",
+                        currentStep > step.id 
+                          ? "bg-gradient-to-r from-violet-600 to-indigo-600" 
+                          : "bg-slate-200"
+                      )} />
+                    )}
                   </div>
-                  {index < STEPS.length - 1 && (
-                    <div className={cn(
-                      "h-0.5 flex-1 mx-4 transition-all duration-300",
-                      currentStep > step.id ? "bg-violet-600" : "bg-slate-200"
-                    )} />
-                  )}
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
 
         {/* Step Content */}
-        <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 md:p-12 mb-8 min-h-[500px]">
+        <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 md:p-16 mb-10 min-h-[600px] transition-all duration-500">
           {/* Step 1: Project Type */}
           {currentStep === 1 && (
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Let's start with the basics</h2>
-                <p className="text-slate-500">Choose your project type and give it a name</p>
+            <div className="space-y-10 animate-in fade-in duration-500">
+              <div className="text-center">
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-3">
+                  Let's start with the basics
+                </h2>
+                <p className="text-lg text-slate-600">Choose your project type and give it a name</p>
               </div>
 
               <div className="space-y-6">
@@ -267,26 +286,36 @@ export default function ApplicationBuilder() {
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <Label className="text-base">Project Type *</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  <Label className="text-lg font-semibold text-slate-900">Project Type *</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {PROJECT_TYPES.map((type) => (
                       <button
                         key={type.value}
                         onClick={() => setFormData({ ...formData, type: type.value })}
                         className={cn(
-                          "p-6 rounded-2xl border-2 text-left transition-all duration-300",
+                          "group p-8 rounded-3xl border-2 text-left transition-all duration-500 hover:scale-[1.02]",
                           formData.type === type.value
-                            ? "border-violet-500 bg-violet-50 shadow-lg shadow-violet-100"
-                            : "border-slate-200 hover:border-slate-300 hover:shadow-md"
+                            ? "border-violet-500 bg-gradient-to-br from-violet-50 to-indigo-50 shadow-2xl shadow-violet-200/50"
+                            : "border-slate-200 bg-white hover:border-violet-300 hover:shadow-xl"
                         )}
                       >
-                        <div className="flex items-start gap-4">
-                          <span className="text-4xl">{type.icon}</span>
-                          <div>
-                            <h3 className="font-semibold text-slate-900 mb-1">{type.label}</h3>
-                            <p className="text-sm text-slate-500 mb-2">{type.description}</p>
-                            <p className="text-xs text-violet-600 font-medium">Best for: {type.best_for}</p>
+                        <div className="flex items-start gap-5">
+                          <div className={cn(
+                            "w-16 h-16 rounded-2xl flex items-center justify-center text-4xl transition-all duration-300",
+                            formData.type === type.value 
+                              ? "bg-white shadow-lg scale-110" 
+                              : "bg-slate-50 group-hover:bg-white group-hover:shadow-md"
+                          )}>
+                            {type.icon}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-xl font-bold text-slate-900 mb-2">{type.label}</h3>
+                            <p className="text-sm text-slate-600 mb-3 leading-relaxed">{type.description}</p>
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold">
+                              <Sparkles className="w-3 h-3" />
+                              {type.best_for}
+                            </div>
                           </div>
                         </div>
                       </button>
@@ -299,13 +328,15 @@ export default function ApplicationBuilder() {
 
           {/* Step 2: Template Selection */}
           {currentStep === 2 && (
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Choose a template</h2>
-                <p className="text-slate-500">Start with a pre-built template or from scratch</p>
+            <div className="space-y-10 animate-in fade-in duration-500">
+              <div className="text-center">
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-3">
+                  Choose a template
+                </h2>
+                <p className="text-lg text-slate-600">Start with a pre-built template or from scratch</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {TEMPLATES.map((template) => {
                   const TemplateIcon = template.icon;
                   return (
@@ -313,27 +344,35 @@ export default function ApplicationBuilder() {
                       key={template.id}
                       onClick={() => setFormData({ ...formData, template: template.id })}
                       className={cn(
-                        "p-6 rounded-2xl border-2 text-left transition-all duration-300",
+                        "group p-6 rounded-3xl border-2 text-left transition-all duration-500 hover:scale-105",
                         formData.template === template.id
-                          ? "border-violet-500 bg-violet-50 shadow-lg"
-                          : "border-slate-200 hover:border-slate-300 hover:shadow-md"
+                          ? "border-violet-500 bg-gradient-to-br from-violet-50 to-indigo-50 shadow-2xl shadow-violet-200/50"
+                          : "border-slate-200 bg-white hover:border-violet-300 hover:shadow-xl"
                       )}
                     >
-                      <div className="w-12 h-12 bg-gradient-to-br from-violet-100 to-indigo-100 rounded-xl flex items-center justify-center mb-4">
-                        <TemplateIcon className="w-6 h-6 text-violet-600" />
+                      <div className={cn(
+                        "w-16 h-16 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300",
+                        formData.template === template.id
+                          ? "bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg"
+                          : "bg-gradient-to-br from-violet-100 to-indigo-100 group-hover:from-violet-200 group-hover:to-indigo-200"
+                      )}>
+                        <TemplateIcon className={cn(
+                          "w-8 h-8 transition-all duration-300",
+                          formData.template === template.id ? "text-white" : "text-violet-600"
+                        )} />
                       </div>
-                      <h3 className="font-semibold text-slate-900 mb-2">{template.name}</h3>
-                      <p className="text-sm text-slate-500 mb-3">{template.description}</p>
+                      <h3 className="text-xl font-bold text-slate-900 mb-2">{template.name}</h3>
+                      <p className="text-sm text-slate-600 mb-4 leading-relaxed">{template.description}</p>
                       {template.features.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-2">
                           {template.features.slice(0, 2).map((feature, i) => (
-                            <span key={i} className="text-xs px-2 py-1 bg-white rounded-lg text-slate-600">
+                            <span key={i} className="text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-700 font-medium">
                               {feature}
                             </span>
                           ))}
                           {template.features.length > 2 && (
-                            <span className="text-xs px-2 py-1 bg-white rounded-lg text-slate-500">
-                              +{template.features.length - 2}
+                            <span className="text-xs px-3 py-1.5 bg-violet-100 text-violet-700 rounded-full font-semibold">
+                              +{template.features.length - 2} more
                             </span>
                           )}
                         </div>
@@ -347,10 +386,12 @@ export default function ApplicationBuilder() {
 
           {/* Step 3: Features */}
           {currentStep === 3 && (
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Select features</h2>
-                <p className="text-slate-500">Choose the features you need for your application</p>
+            <div className="space-y-10 animate-in fade-in duration-500">
+              <div className="text-center">
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-3">
+                  Select features
+                </h2>
+                <p className="text-lg text-slate-600">Choose the features you need for your application</p>
               </div>
 
               {["core", "business", "communication", "features", "advanced"].map((category) => {
@@ -359,10 +400,11 @@ export default function ApplicationBuilder() {
 
                 return (
                   <div key={category}>
-                    <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-3">
+                    <h3 className="text-base font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
+                      <div className="w-1 h-5 bg-gradient-to-b from-violet-600 to-indigo-600 rounded-full" />
                       {category}
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       {categoryFeatures.map((feature) => {
                         const isSelected = formData.features.includes(feature.id);
                         return (
@@ -377,14 +419,21 @@ export default function ApplicationBuilder() {
                               });
                             }}
                             className={cn(
-                              "p-4 rounded-xl border-2 text-center transition-all",
+                              "group p-5 rounded-2xl border-2 text-center transition-all duration-300 hover:scale-105",
                               isSelected
-                                ? "border-violet-500 bg-violet-50"
-                                : "border-slate-200 hover:border-slate-300"
+                                ? "border-violet-500 bg-gradient-to-br from-violet-50 to-indigo-50 shadow-lg shadow-violet-200/50"
+                                : "border-slate-200 bg-white hover:border-violet-300 hover:shadow-lg"
                             )}
                           >
-                            <span className="text-2xl block mb-2">{feature.icon}</span>
-                            <span className="text-sm font-medium text-slate-900">{feature.name}</span>
+                            <div className={cn(
+                              "w-14 h-14 mx-auto mb-3 rounded-xl flex items-center justify-center text-3xl transition-all duration-300",
+                              isSelected 
+                                ? "bg-white shadow-md" 
+                                : "bg-slate-50 group-hover:bg-white"
+                            )}>
+                              {feature.icon}
+                            </div>
+                            <span className="text-sm font-semibold text-slate-900 block">{feature.name}</span>
                           </button>
                         );
                       })}
@@ -603,31 +652,31 @@ export default function ApplicationBuilder() {
               variant="outline"
               onClick={handleBack}
               disabled={currentStep === 1}
-              className="px-8"
+              className="px-10 py-6 text-base rounded-2xl border-2 hover:shadow-lg transition-all duration-300 disabled:opacity-50"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back
+              <ArrowLeft className="w-5 h-5 mr-2" /> Back
             </Button>
 
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               {currentStep < 6 ? (
                 <Button
                   onClick={handleNext}
                   disabled={!canProceed()}
-                  className="bg-violet-600 hover:bg-violet-700 px-8"
+                  className="px-10 py-6 text-base rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
                 >
-                  Next <ArrowRight className="w-4 h-4 ml-2" />
+                  Next <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               ) : (
                 <Button
                   onClick={handleFinish}
                   disabled={createProjectMutation.isPending || !canProceed()}
-                  className="bg-emerald-600 hover:bg-emerald-700 px-8"
+                  className="px-10 py-6 text-base rounded-2xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
                 >
                   {createProjectMutation.isPending ? (
                     <>Creating...</>
                   ) : (
                     <>
-                      <Rocket className="w-4 h-4 mr-2" /> Create Application
+                      <Rocket className="w-5 h-5 mr-2" /> Create Application
                     </>
                   )}
                 </Button>
