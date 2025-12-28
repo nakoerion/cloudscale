@@ -41,13 +41,14 @@ import PipelineStatus from "@/components/builder/PipelineStatus";
 import TemplateMarketplace from "@/components/builder/TemplateMarketplace";
 import PublishTemplateModal from "@/components/builder/PublishTemplateModal";
 import AIIdeaAnalyzer from "@/components/builder/AIIdeaAnalyzer";
+import CodeGenerator from "@/components/builder/CodeGenerator";
 
 const STEPS = [
   { id: 0, name: "Describe Idea", icon: Lightbulb },
   { id: 1, name: "Project Type", icon: Sparkles },
   { id: 2, name: "Template", icon: Palette },
   { id: 3, name: "Features", icon: Zap },
-  { id: 4, name: "Tech Stack", icon: Code },
+  { id: 4, name: "Generate Code", icon: Code },
   { id: 5, name: "Deployment", icon: Cloud },
   { id: 6, name: "CI/CD", icon: GitBranch },
   { id: 7, name: "Review", icon: CheckCircle2 }
@@ -236,6 +237,7 @@ export default function ApplicationBuilder() {
   const [showPipeline, setShowPipeline] = useState(false);
   const [showMarketplace, setShowMarketplace] = useState(false);
   const [showPublishModal, setShowPublishModal] = useState(false);
+  const [appDescription, setAppDescription] = useState("");
 
   useEffect(() => {
     const savedFavorites = localStorage.getItem("template_favorites");
@@ -293,6 +295,7 @@ export default function ApplicationBuilder() {
 
   const handleAIAnalysisComplete = (analysisData) => {
     // Pre-fill form data based on AI analysis
+    setAppDescription(analysisData.description);
     setFormData({
       ...formData,
       name: analysisData.suggested_name,
@@ -330,7 +333,7 @@ export default function ApplicationBuilder() {
       case 1: return formData.type && formData.name;
       case 2: return formData.template;
       case 3: return true;
-      case 4: return formData.tech_stack.length > 0;
+      case 4: return false; // Code generation handles its own navigation
       case 5: return formData.cloud_provider;
       case 6: return true;
       case 7: return true;
@@ -765,8 +768,17 @@ export default function ApplicationBuilder() {
             </div>
           )}
 
-          {/* Step 4: Tech Stack */}
+          {/* Step 4: Code Generation */}
           {currentStep === 4 && (
+            <CodeGenerator 
+              appDescription={appDescription || formData.description}
+              formData={formData}
+              onComplete={() => setCurrentStep(5)}
+            />
+          )}
+
+          {/* Step 5: Deployment */}
+          {currentStep === 5 && (
             <div className="space-y-8">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">Choose your tech stack</h2>
@@ -872,8 +884,8 @@ export default function ApplicationBuilder() {
             </div>
           )}
 
-          {/* Step 6: CI/CD Setup */}
-          {currentStep === 6 && (
+          {/* Step 7: Review */}
+          {currentStep === 7 && (
             <div className="space-y-10 animate-in fade-in duration-500">
               <div className="text-center">
                 <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-3">
@@ -1051,7 +1063,7 @@ export default function ApplicationBuilder() {
         </div>
 
         {/* Navigation Buttons */}
-        {currentStep <= 7 && (
+        {currentStep > 0 && currentStep <= 7 && currentStep !== 4 && (
           <div className="flex items-center justify-between">
             <Button
               variant="outline"
@@ -1063,7 +1075,7 @@ export default function ApplicationBuilder() {
             </Button>
 
             <div className="flex gap-4">
-              {currentStep === 6 && !repository?.connected && (
+              {currentStep === 6 && !repository?.connected && currentStep !== 4 && (
                 <Button
                   variant="outline"
                   onClick={() => {
