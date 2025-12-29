@@ -18,11 +18,17 @@ import MetricCard from "@/components/dashboard/MetricCard";
 import ProjectCard from "@/components/dashboard/ProjectCard";
 import ActivityFeed from "@/components/dashboard/ActivityFeed";
 import CreateProjectModal from "@/components/modals/CreateProjectModal";
+import AIInsightsPanel from "@/components/dashboard/AIInsightsPanel";
+import WidgetCustomizer from "@/components/dashboard/WidgetCustomizer";
+import GranularAnalytics from "@/components/dashboard/GranularAnalytics";
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [typeFilter, setTypeFilter] = useState("all");
+  const [visibleWidgets, setVisibleWidgets] = useState([
+    "metrics", "projects", "ai-insights", "analytics", "activity"
+  ]);
   const queryClient = useQueryClient();
 
   const { data: projects = [], isLoading } = useQuery({
@@ -78,56 +84,79 @@ export default function Dashboard() {
             <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
             <p className="text-slate-500 mt-1">Manage your projects, deployments, and infrastructure</p>
           </div>
-          <Button 
-            onClick={() => setShowCreateModal(true)}
-            className="bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-200"
-          >
-            <Plus className="w-4 h-4 mr-2" /> New Project
-          </Button>
+          <div className="flex gap-3">
+            <WidgetCustomizer 
+              visibleWidgets={visibleWidgets}
+              onUpdateWidgets={setVisibleWidgets}
+            />
+            <Button 
+              onClick={() => setShowCreateModal(true)}
+              className="bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-200"
+            >
+              <Plus className="w-4 h-4 mr-2" /> New Project
+            </Button>
+          </div>
         </div>
 
         {/* Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-          <MetricCard
-            title="Total Projects"
-            value={totalProjects}
-            change="+12%"
-            changeType="positive"
-            icon={Layers}
-            iconColor="text-violet-500"
-            iconBg="bg-violet-50"
-          />
-          <MetricCard
-            title="Active in Production"
-            value={activeProjects}
-            change="+8%"
-            changeType="positive"
-            icon={Activity}
-            iconColor="text-emerald-500"
-            iconBg="bg-emerald-50"
-          />
-          <MetricCard
-            title="Avg Uptime"
-            value={`${avgUptime.toFixed(1)}%`}
-            change="+0.2%"
-            changeType="positive"
-            icon={TrendingUp}
-            iconColor="text-blue-500"
-            iconBg="bg-blue-50"
-          />
-          <MetricCard
-            title="Deployments"
-            value={monthlyDeployments}
-            change="+23%"
-            changeType="positive"
-            icon={Zap}
-            iconColor="text-amber-500"
-            iconBg="bg-amber-50"
-          />
-        </div>
+        {visibleWidgets.includes("metrics") && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <MetricCard
+              title="Total Projects"
+              value={totalProjects}
+              change="+12%"
+              changeType="positive"
+              icon={Layers}
+              iconColor="text-violet-500"
+              iconBg="bg-violet-50"
+            />
+            <MetricCard
+              title="Active in Production"
+              value={activeProjects}
+              change="+8%"
+              changeType="positive"
+              icon={Activity}
+              iconColor="text-emerald-500"
+              iconBg="bg-emerald-50"
+            />
+            <MetricCard
+              title="Avg Uptime"
+              value={`${avgUptime.toFixed(1)}%`}
+              change="+0.2%"
+              changeType="positive"
+              icon={TrendingUp}
+              iconColor="text-blue-500"
+              iconBg="bg-blue-50"
+            />
+            <MetricCard
+              title="Deployments"
+              value={monthlyDeployments}
+              change="+23%"
+              changeType="positive"
+              icon={Zap}
+              iconColor="text-amber-500"
+              iconBg="bg-amber-50"
+            />
+          </div>
+        )}
+
+        {/* AI Insights */}
+        {visibleWidgets.includes("ai-insights") && (
+          <div className="mb-8">
+            <AIInsightsPanel />
+          </div>
+        )}
+
+        {/* Granular Analytics */}
+        {visibleWidgets.includes("analytics") && (
+          <div className="mb-8">
+            <GranularAnalytics />
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Projects Grid */}
+          {visibleWidgets.includes("projects") && (
           <div className="lg:col-span-2">
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -188,11 +217,14 @@ export default function Dashboard() {
               </div>
             )}
           </div>
+          )}
 
           {/* Sidebar */}
+          {visibleWidgets.includes("activity") && (
           <div className="space-y-6">
             <ActivityFeed activities={recentActivity} />
           </div>
+          )}
         </div>
       </div>
 
