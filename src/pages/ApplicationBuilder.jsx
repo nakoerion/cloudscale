@@ -316,14 +316,28 @@ export default function ApplicationBuilder() {
 
   const handleFinish = () => {
     const selectedTemplate = TEMPLATES.find(t => t.id === formData.template);
+    
     createProjectMutation.mutate({
       name: formData.name,
-      description: formData.description,
+      description: formData.description || `${selectedTemplate?.name || formData.type} application built with CloudForge`,
       type: formData.type,
       cloud_provider: formData.cloud_provider,
       deployment_region: formData.deployment_region,
-      tech_stack: formData.tech_stack,
-      status: "draft",
+      tech_stack: formData.tech_stack.length > 0 ? formData.tech_stack : ["React", "Node.js", "PostgreSQL"],
+      status: "development",
+      repository_url: repository?.repository_url || null,
+      environments: [
+        {
+          name: "development",
+          url: "",
+          status: "active"
+        },
+        {
+          name: "production", 
+          url: "",
+          status: "pending"
+        }
+      ],
       metrics: {
         uptime: 100,
         requests_today: 0,
@@ -336,14 +350,13 @@ export default function ApplicationBuilder() {
   const canProceed = () => {
     switch (currentStep) {
       case 0: return false; // AI step handles its own navigation
-      case 1: return formData.type && formData.name;
+      case 1: return formData.type && formData.name && formData.name.trim().length > 0;
       case 2: return formData.template;
-      case 3: return true;
+      case 3: return true; // Features are optional
       case 4: return false; // Code generation handles its own navigation
       case 5: return false; // Testing handles its own navigation
-      case 6: return formData.cloud_provider;
-      case 7: return true;
-      case 8: return true;
+      case 6: return formData.cloud_provider; // Deployment config required
+      case 7: return formData.name && formData.type && formData.template && formData.cloud_provider;
       default: return false;
     }
   };
@@ -797,101 +810,78 @@ export default function ApplicationBuilder() {
             />
           )}
 
-          {/* Step 6: Cloud Deployment */}
+          {/* Step 6: Cloud Deployment & Repository */}
           {currentStep === 6 && (
-            <CloudDeploymentWizard 
-              formData={formData}
-              onComplete={(result) => {
-                setDeploymentResult(result);
-                setCurrentStep(7);
-              }}
-            />
-          )}
-
-          {/* Step 7: Review */}
-          {currentStep === 7 && (
-            <div className="space-y-10 animate-in fade-in duration-500">
+            <div className="space-y-8 animate-in fade-in duration-500">
               <div className="text-center">
                 <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-3">
-                  Connect your repository
+                  Deployment Configuration
                 </h2>
-                <p className="text-lg text-slate-600">Enable continuous deployment with GitHub or GitLab</p>
+                <p className="text-lg text-slate-600">Configure cloud deployment and CI/CD (optional)</p>
               </div>
 
-              <div className="max-w-2xl mx-auto space-y-6">
+              <CloudDeploymentWizard 
+                formData={formData}
+                onUpdate={(data) => setFormData({ ...formData, ...data })}
+              />
+
+              <div className="border-t pt-8">
+                <h3 className="text-xl font-bold text-slate-900 mb-4">CI/CD Pipeline (Optional)</h3>
+                <p className="text-slate-600 mb-6">Connect a repository to enable automated deployments</p>
+                
                 {!repository?.connected ? (
-                  <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <button
-                        onClick={() => setShowRepoModal(true)}
-                        className="group p-8 rounded-3xl border-2 border-slate-200 hover:border-violet-500 bg-white hover:bg-gradient-to-br hover:from-violet-50 hover:to-indigo-50 transition-all duration-300 hover:shadow-xl"
-                      >
-                        <Github className="w-12 h-12 text-slate-700 mb-4 group-hover:text-violet-600 transition-colors" />
-                        <h3 className="text-xl font-bold text-slate-900 mb-2">GitHub</h3>
-                        <p className="text-sm text-slate-600">Connect your GitHub repository for automated deployments</p>
-                      </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                      onClick={() => setShowRepoModal(true)}
+                      className="group p-6 rounded-2xl border-2 border-slate-200 hover:border-violet-500 bg-white hover:bg-gradient-to-br hover:from-violet-50 hover:to-indigo-50 transition-all duration-300 hover:shadow-lg"
+                    >
+                      <Github className="w-10 h-10 text-slate-700 mb-3 group-hover:text-violet-600 transition-colors" />
+                      <h4 className="text-lg font-bold text-slate-900 mb-2">GitHub</h4>
+                      <p className="text-sm text-slate-600">Connect GitHub for automated CI/CD</p>
+                    </button>
 
-                      <button
-                        onClick={() => setShowRepoModal(true)}
-                        className="group p-8 rounded-3xl border-2 border-slate-200 hover:border-violet-500 bg-white hover:bg-gradient-to-br hover:from-violet-50 hover:to-indigo-50 transition-all duration-300 hover:shadow-xl"
-                      >
-                        <GitBranch className="w-12 h-12 text-slate-700 mb-4 group-hover:text-violet-600 transition-colors" />
-                        <h3 className="text-xl font-bold text-slate-900 mb-2">GitLab</h3>
-                        <p className="text-sm text-slate-600">Connect your GitLab repository for automated deployments</p>
-                      </button>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
-                      <div className="flex gap-4">
-                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
-                          <Rocket className="w-6 h-6 text-blue-600" />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-blue-900 mb-2">Automated CI/CD Pipeline</h4>
-                          <ul className="text-sm text-blue-700 space-y-1">
-                            <li>• Automatic builds on every commit</li>
-                            <li>• Run tests before deployment</li>
-                            <li>• Zero-downtime deployments</li>
-                            <li>• Rollback support</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </>
+                    <button
+                      onClick={() => setShowRepoModal(true)}
+                      className="group p-6 rounded-2xl border-2 border-slate-200 hover:border-violet-500 bg-white hover:bg-gradient-to-br hover:from-violet-50 hover:to-indigo-50 transition-all duration-300 hover:shadow-lg"
+                    >
+                      <GitBranch className="w-10 h-10 text-slate-700 mb-3 group-hover:text-violet-600 transition-colors" />
+                      <h4 className="text-lg font-bold text-slate-900 mb-2">GitLab</h4>
+                      <p className="text-sm text-slate-600">Connect GitLab for automated CI/CD</p>
+                    </button>
+                  </div>
                 ) : (
-                  <div className="space-y-6">
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <CheckCircle2 className="w-6 h-6 text-emerald-600" />
-                        <h4 className="font-semibold text-emerald-900">Repository Connected</h4>
-                      </div>
-                      <div className="space-y-2 text-sm text-emerald-700">
-                        <p><strong>Provider:</strong> {repository.provider}</p>
-                        <p><strong>Repository:</strong> {repository.repository_url}</p>
-                        <p><strong>Branch:</strong> {repository.branch}</p>
-                      </div>
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                      <h4 className="font-semibold text-emerald-900">Repository Connected</h4>
                     </div>
-
-                    {showPipeline && (
-                      <PipelineStatus repository={repository} />
-                    )}
+                    <div className="space-y-1 text-sm text-emerald-700">
+                      <p><strong>Provider:</strong> {repository.provider}</p>
+                      <p><strong>Repository:</strong> {repository.repository_url}</p>
+                      <p><strong>Branch:</strong> {repository.branch}</p>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
           )}
 
-          {/* Step 7: Review */}
+          {/* Step 7: Publish & Review */}
           {currentStep === 7 && (
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Review your application</h2>
-                <p className="text-slate-500">Check everything before we create your project</p>
+            <div className="space-y-8 animate-in fade-in duration-500">
+              <div className="text-center">
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-3">
+                  Review & Publish
+                </h2>
+                <p className="text-lg text-slate-600">Everything looks good? Let's create your application!</p>
               </div>
 
               <div className="space-y-6">
-                <div className="p-6 bg-slate-50 rounded-2xl">
-                  <h3 className="font-semibold text-slate-900 mb-4">Project Details</h3>
+                <div className="p-6 bg-gradient-to-br from-violet-50 to-indigo-50 rounded-2xl border-2 border-violet-200">
+                  <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-violet-600" />
+                    Project Details
+                  </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-slate-500">Name</p>
@@ -904,7 +894,7 @@ export default function ApplicationBuilder() {
                     <div>
                       <p className="text-sm text-slate-500">Template</p>
                       <p className="font-medium text-slate-900">
-                        {TEMPLATES.find(t => t.id === formData.template)?.name}
+                        {TEMPLATES.find(t => t.id === formData.template)?.name || "Custom"}
                       </p>
                     </div>
                     <div>
@@ -915,13 +905,13 @@ export default function ApplicationBuilder() {
                 </div>
 
                 {formData.features.length > 0 && (
-                  <div className="p-6 bg-slate-50 rounded-2xl">
-                    <h3 className="font-semibold text-slate-900 mb-4">Selected Features</h3>
+                  <div className="p-6 bg-white rounded-2xl border border-slate-200">
+                    <h3 className="font-semibold text-slate-900 mb-4">Selected Features ({formData.features.length})</h3>
                     <div className="flex flex-wrap gap-2">
                       {formData.features.map((featureId) => {
                         const feature = FEATURES.find(f => f.id === featureId);
                         return (
-                          <Badge key={featureId} className="bg-violet-100 text-violet-700">
+                          <Badge key={featureId} className="bg-violet-100 text-violet-700 px-3 py-1">
                             {feature?.icon} {feature?.name}
                           </Badge>
                         );
@@ -931,11 +921,11 @@ export default function ApplicationBuilder() {
                 )}
 
                 {formData.tech_stack.length > 0 && (
-                  <div className="p-6 bg-slate-50 rounded-2xl">
+                  <div className="p-6 bg-white rounded-2xl border border-slate-200">
                     <h3 className="font-semibold text-slate-900 mb-4">Tech Stack</h3>
                     <div className="flex flex-wrap gap-2">
                       {formData.tech_stack.map((tech) => (
-                        <Badge key={tech} variant="outline">
+                        <Badge key={tech} variant="outline" className="px-3 py-1">
                           {tech}
                         </Badge>
                       ))}
@@ -943,10 +933,23 @@ export default function ApplicationBuilder() {
                   </div>
                 )}
 
-                {repository?.connected && (
-                  <div className="p-6 bg-slate-50 rounded-2xl">
-                    <h3 className="font-semibold text-slate-900 mb-4">CI/CD Pipeline</h3>
+                {deploymentResult && (
+                  <div className="p-6 bg-white rounded-2xl border border-slate-200">
+                    <h3 className="font-semibold text-slate-900 mb-4">Deployment Configuration</h3>
                     <div className="space-y-2 text-sm">
+                      <p><strong>Region:</strong> {formData.deployment_region}</p>
+                      <p><strong>Environment:</strong> Production-ready</p>
+                    </div>
+                  </div>
+                )}
+
+                {repository?.connected && (
+                  <div className="p-6 bg-emerald-50 rounded-2xl border border-emerald-200">
+                    <h3 className="font-semibold text-emerald-900 mb-3 flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5" />
+                      CI/CD Pipeline Configured
+                    </h3>
+                    <div className="space-y-2 text-sm text-emerald-700">
                       <p><strong>Provider:</strong> {repository.provider}</p>
                       <p><strong>Repository:</strong> {repository.repository_url}</p>
                       <p><strong>Branch:</strong> {repository.branch}</p>
@@ -954,14 +957,23 @@ export default function ApplicationBuilder() {
                   </div>
                 )}
 
-                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
-                  <div className="flex gap-3">
-                    <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />
+                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-2xl p-8">
+                  <div className="flex gap-4">
+                    <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center shrink-0">
+                      <Rocket className="w-8 h-8 text-emerald-600" />
+                    </div>
                     <div>
-                      <h4 className="font-semibold text-emerald-900 mb-1">Ready to launch!</h4>
-                      <p className="text-sm text-emerald-700">
-                        Your application will be created and {repository?.connected ? "automatically deployed via CI/CD pipeline" : "ready to deploy when you're ready"}.
+                      <h4 className="text-xl font-bold text-emerald-900 mb-2">Ready to Launch! 🚀</h4>
+                      <p className="text-emerald-700 mb-4">
+                        Your application configuration is complete. Click "Create Application" to:
                       </p>
+                      <ul className="text-sm text-emerald-700 space-y-1.5">
+                        <li>✓ Create your project in the platform</li>
+                        <li>✓ Set up the infrastructure on {formData.cloud_provider.toUpperCase()}</li>
+                        <li>✓ Generate initial codebase with selected features</li>
+                        {repository?.connected && <li>✓ Configure CI/CD pipeline for automated deployments</li>}
+                        <li>✓ Make it accessible via your dashboard</li>
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -987,51 +999,42 @@ export default function ApplicationBuilder() {
         </div>
 
         {/* Navigation Buttons */}
-        {currentStep > 0 && currentStep <= 10 && currentStep !== 4 && currentStep !== 5 && currentStep !== 6 && currentStep !== 7 && (
+        {currentStep > 0 && currentStep <= 7 && currentStep !== 4 && currentStep !== 5 && (
           <div className="flex items-center justify-between">
             <Button
               variant="outline"
               onClick={handleBack}
-              disabled={currentStep === 0}
+              disabled={currentStep === 0 || createProjectMutation.isPending}
               className="px-10 py-6 text-base rounded-2xl border-2 hover:shadow-lg transition-all duration-300 disabled:opacity-50"
             >
               <ArrowLeft className="w-5 h-5 mr-2" /> Back
             </Button>
 
             <div className="flex gap-4">
-              {currentStep === 8 && !repository?.connected && (
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setRepository(null);
-                    handleNext();
-                  }}
-                  className="px-10 py-6 text-base rounded-2xl border-2 hover:shadow-lg transition-all duration-300"
-                >
-                  Skip CI/CD
-                </Button>
-              )}
-              {currentStep < 10 ? (
-                <Button
-                  onClick={handleNext}
-                  disabled={!canProceed()}
-                  className="px-10 py-6 text-base rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
-                >
-                  Next <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              ) : (
+              {currentStep === 7 ? (
                 <Button
                   onClick={handleFinish}
                   disabled={createProjectMutation.isPending || !canProceed()}
-                  className="px-10 py-6 text-base rounded-2xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
+                  className="px-12 py-6 text-lg rounded-2xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 font-semibold"
                 >
                   {createProjectMutation.isPending ? (
-                    <>Creating...</>
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin" />
+                      Creating Application...
+                    </div>
                   ) : (
                     <>
-                      <Rocket className="w-5 h-5 mr-2" /> Create Application
+                      <Rocket className="w-6 h-6 mr-2" /> Create Application
                     </>
                   )}
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleNext}
+                  disabled={!canProceed() || createProjectMutation.isPending}
+                  className="px-10 py-6 text-base rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
+                >
+                  Continue <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               )}
             </div>
