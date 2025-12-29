@@ -25,6 +25,9 @@ import AnalyticsIntegration from "@/components/monitoring/AnalyticsIntegration";
 import AIPipelineInsights from "@/components/devops/AIPipelineInsights";
 import DeploymentFailurePrediction from "@/components/devops/DeploymentFailurePrediction";
 import AICodeRefactoring from "@/components/devops/AICodeRefactoring";
+import PipelineCustomizer from "@/components/devops/PipelineCustomizer";
+import DeploymentMetrics from "@/components/devops/DeploymentMetrics";
+import AIPipelineGenerator from "@/components/devops/AIPipelineGenerator";
 
 export default function DevOps() {
   const [showPipelineModal, setShowPipelineModal] = useState(false);
@@ -147,8 +150,21 @@ export default function DevOps() {
 
           <TabsContent value="pipelines">
             <div className="mb-6 space-y-6">
+              <DeploymentMetrics />
+              <AIPipelineGenerator />
               {pipelines.length > 0 && (
-                <PipelineStageFlow pipeline={pipelines[0]} />
+                <>
+                  <PipelineStageFlow pipeline={pipelines[0]} />
+                  <PipelineCustomizer 
+                    pipeline={pipelines[0]} 
+                    onSave={(config) => {
+                      updatePipelineMutation.mutate({
+                        id: pipelines[0].id,
+                        data: config
+                      });
+                    }} 
+                  />
+                </>
               )}
               <AIPipelineInsights />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

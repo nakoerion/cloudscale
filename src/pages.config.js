@@ -10,9 +10,9 @@ import Monitoring from './pages/Monitoring';
 import ProjectDetails from './pages/ProjectDetails';
 import RoleManagement from './pages/RoleManagement';
 import SLAContracts from './pages/SLAContracts';
+import Support from './pages/Support';
 import VisualBuilder from './pages/VisualBuilder';
 import WorkflowAutomation from './pages/WorkflowAutomation';
-import Support from './pages/Support';
 import __Layout from './Layout.jsx';
 
 
@@ -29,9 +29,9 @@ export const PAGES = {
     "ProjectDetails": ProjectDetails,
     "RoleManagement": RoleManagement,
     "SLAContracts": SLAContracts,
+    "Support": Support,
     "VisualBuilder": VisualBuilder,
     "WorkflowAutomation": WorkflowAutomation,
-    "Support": Support,
 }
 
 export const pagesConfig = {
