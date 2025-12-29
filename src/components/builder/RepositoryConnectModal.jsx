@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Github, GitBranch, CheckCircle2, AlertCircle } from "lucide-react";
+import { Github, GitBranch, CheckCircle2, AlertCircle, Gitlab } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -49,12 +49,15 @@ export default function RepositoryConnectModal({ open, onClose, onConnect, proje
         </DialogHeader>
 
         <Tabs value={provider} onValueChange={setProvider} className="mt-4">
-          <TabsList className="grid grid-cols-2 w-full">
+          <TabsList className="grid grid-cols-3 w-full">
             <TabsTrigger value="github" className="flex items-center gap-2">
               <Github className="w-4 h-4" /> GitHub
             </TabsTrigger>
             <TabsTrigger value="gitlab" className="flex items-center gap-2">
-              <GitBranch className="w-4 h-4" /> GitLab
+              <Gitlab className="w-4 h-4" /> GitLab
+            </TabsTrigger>
+            <TabsTrigger value="bitbucket" className="flex items-center gap-2">
+              <GitBranch className="w-4 h-4" /> Bitbucket
             </TabsTrigger>
           </TabsList>
 
@@ -105,9 +108,9 @@ export default function RepositoryConnectModal({ open, onClose, onConnect, proje
                   className="mt-2"
                 />
                 <p className="text-xs text-slate-500 mt-1">
-                  {provider === "github" 
-                    ? "Generate at: github.com/settings/tokens" 
-                    : "Generate at: gitlab.com/-/profile/personal_access_tokens"}
+                  {provider === "github" && "Generate at: github.com/settings/tokens"}
+                  {provider === "gitlab" && "Generate at: gitlab.com/-/profile/personal_access_tokens"}
+                  {provider === "bitbucket" && "Generate at: bitbucket.org/account/settings/app-passwords"}
                 </p>
               </div>
             </div>

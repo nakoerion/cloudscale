@@ -28,6 +28,8 @@ import AICodeRefactoring from "@/components/devops/AICodeRefactoring";
 import PipelineCustomizer from "@/components/devops/PipelineCustomizer";
 import DeploymentMetrics from "@/components/devops/DeploymentMetrics";
 import AIPipelineGenerator from "@/components/devops/AIPipelineGenerator";
+import DeploymentStrategySelector from "@/components/devops/DeploymentStrategySelector";
+import PipelineConfigGenerator from "@/components/devops/PipelineConfigGenerator";
 
 export default function DevOps() {
   const [showPipelineModal, setShowPipelineModal] = useState(false);
@@ -151,7 +153,13 @@ export default function DevOps() {
           <TabsContent value="pipelines">
             <div className="mb-6 space-y-6">
               <DeploymentMetrics />
-              <AIPipelineGenerator />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <AIPipelineGenerator />
+                <DeploymentStrategySelector 
+                  onSelect={(strategy) => console.log('Selected strategy:', strategy)}
+                />
+              </div>
+              <PipelineConfigGenerator />
               {pipelines.length > 0 && (
                 <>
                   <PipelineStageFlow pipeline={pipelines[0]} />
