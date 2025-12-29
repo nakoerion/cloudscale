@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -63,7 +63,7 @@ const DEPLOYMENT_STEPS = [
   { id: 6, name: "Testing Endpoints", status: "pending" }
 ];
 
-export default function CloudDeploymentWizard({ formData, onComplete }) {
+export default function CloudDeploymentWizard({ formData, onComplete, onUpdate }) {
   const [selectedProvider, setSelectedProvider] = useState("cloudforge");
   const [region, setRegion] = useState("global-edge");
   const [config, setConfig] = useState({
@@ -78,6 +78,16 @@ export default function CloudDeploymentWizard({ formData, onComplete }) {
   const [deploymentResult, setDeploymentResult] = useState(null);
 
   const provider = CLOUD_PROVIDERS.find(p => p.id === selectedProvider);
+
+  // Update parent form data when provider or region changes
+  React.useEffect(() => {
+    if (onUpdate) {
+      onUpdate({
+        cloud_provider: selectedProvider,
+        deployment_region: region
+      });
+    }
+  }, [selectedProvider, region, onUpdate]);
 
   const deploy = async () => {
     setIsDeploying(true);
