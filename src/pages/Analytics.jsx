@@ -21,10 +21,21 @@ import AppAnalyticsDashboard from "@/components/analytics/AppAnalyticsDashboard"
 import UserBehaviorInsights from "@/components/analytics/UserBehaviorInsights.jsx";
 import PredictiveAnalytics from "@/components/analytics/PredictiveAnalytics.jsx";
 import AIRecommendationEngine from "@/components/analytics/AIRecommendationEngine.jsx";
+import FeatureAdoptionMetrics from "@/components/analytics/FeatureAdoptionMetrics";
+import UserEngagementMetrics from "@/components/analytics/UserEngagementMetrics";
+import BehaviorPredictionEngine from "@/components/analytics/BehaviorPredictionEngine";
+import AnalyticsWidgetManager from "@/components/analytics/AnalyticsWidgetManager";
 
 export default function Analytics() {
   const [timeRange, setTimeRange] = useState("7d");
   const [activeTab, setActiveTab] = useState("overview");
+  const [widgets, setWidgets] = useState([
+    { id: "engagement", name: "User Engagement", description: "DAU, sessions, actions", enabled: true },
+    { id: "feature-adoption", name: "Feature Adoption", description: "Feature usage and trends", enabled: true },
+    { id: "behavior-prediction", name: "AI Predictions", description: "Behavior insights and forecasts", enabled: true },
+    { id: "churn-prediction", name: "Churn Risk", description: "At-risk user analysis", enabled: true },
+    { id: "performance", name: "Performance Reports", description: "Weekly performance summaries", enabled: true }
+  ]);
 
   const { data: projects = [] } = useQuery({
     queryKey: ["projects"],
@@ -49,6 +60,7 @@ export default function Analytics() {
             <p className="text-slate-500 mt-1">Deep insights powered by artificial intelligence</p>
           </div>
           <div className="flex items-center gap-3">
+            <AnalyticsWidgetManager widgets={widgets} onUpdate={setWidgets} />
             <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg p-1">
               {["24h", "7d", "30d", "90d"].map((range) => (
                 <button
@@ -131,8 +143,11 @@ export default function Analytics() {
 
           <TabsContent value="overview">
             <div className="space-y-6">
+              {widgets.find(w => w.id === "engagement" && w.enabled) && <UserEngagementMetrics />}
+              {widgets.find(w => w.id === "feature-adoption" && w.enabled) && <FeatureAdoptionMetrics />}
               <AppAnalyticsDashboard />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {widgets.find(w => w.id === "behavior-prediction" && w.enabled) && <BehaviorPredictionEngine />}
                 <PredictiveAnalytics />
                 <AIRecommendationEngine />
               </div>
@@ -140,30 +155,45 @@ export default function Analytics() {
           </TabsContent>
 
           <TabsContent value="behavior">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <UserBehaviorInsights />
+            <div className="space-y-6">
+              <UserEngagementMetrics />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <UserBehaviorInsights />
+                </div>
+                <EngagementOptimizer />
               </div>
-              <EngagementOptimizer />
+              <BehaviorPredictionEngine />
             </div>
           </TabsContent>
 
           <TabsContent value="churn">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <ChurnPrediction />
+            <div className="space-y-6">
+              {widgets.find(w => w.id === "churn-prediction" && w.enabled) && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <ChurnPrediction />
+                  <BehaviorPredictionEngine />
+                </div>
+              )}
               <AIRecommendationEngine />
             </div>
           </TabsContent>
 
           <TabsContent value="recommendations">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <EngagementOptimizer />
-              <AIRecommendationEngine />
+            <div className="space-y-6">
+              <BehaviorPredictionEngine />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <EngagementOptimizer />
+                <AIRecommendationEngine />
+              </div>
             </div>
           </TabsContent>
 
           <TabsContent value="reports">
-            <PerformanceReports />
+            <div className="space-y-6">
+              {widgets.find(w => w.id === "performance" && w.enabled) && <PerformanceReports />}
+              <FeatureAdoptionMetrics />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
