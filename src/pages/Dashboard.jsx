@@ -21,6 +21,8 @@ import CreateProjectModal from "@/components/modals/CreateProjectModal";
 import AIInsightsPanel from "@/components/dashboard/AIInsightsPanel";
 import WidgetCustomizer from "@/components/dashboard/WidgetCustomizer";
 import GranularAnalytics from "@/components/dashboard/GranularAnalytics";
+import ProtectedFeature from "@/components/rbac/ProtectedFeature";
+import PermissionButton from "@/components/rbac/PermissionButton";
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -89,12 +91,14 @@ export default function Dashboard() {
               visibleWidgets={visibleWidgets}
               onUpdateWidgets={setVisibleWidgets}
             />
-            <Button 
+            <PermissionButton
+              resource="projects"
+              action="create"
               onClick={() => setShowCreateModal(true)}
               className="bg-violet-600 hover:bg-violet-700 shadow-lg shadow-violet-200"
             >
               <Plus className="w-4 h-4 mr-2" /> New Project
-            </Button>
+            </PermissionButton>
           </div>
         </div>
 
@@ -149,9 +153,11 @@ export default function Dashboard() {
 
         {/* Granular Analytics */}
         {visibleWidgets.includes("analytics") && (
-          <div className="mb-8">
-            <GranularAnalytics />
-          </div>
+          <ProtectedFeature resource="analytics" action="view">
+            <div className="mb-8">
+              <GranularAnalytics />
+            </div>
+          </ProtectedFeature>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
