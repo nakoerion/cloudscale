@@ -7,8 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { FileCode, Plus, Trash2, Eye, Rocket, Copy, Check } from "lucide-react";
+import { FileCode, Plus, Trash2, Eye, Rocket, Copy, Check, Shield } from "lucide-react";
 import { toast } from "sonner";
+import AISecurityScanner from "./AISecurityScanner";
 
 const TERRAFORM_TEMPLATES = {
   aws_ec2: `# AWS EC2 Instance
@@ -195,6 +196,7 @@ variable "environment" {
 export default function IaCTemplateManager() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [scanningTemplate, setScanningTemplate] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -435,6 +437,15 @@ export default function IaCTemplateManager() {
                   </Button>
                   <Button
                     size="sm"
+                    variant="outline"
+                    onClick={() => setScanningTemplate(scanningTemplate === template.id ? null : template.id)}
+                    className="border-violet-200 text-violet-700 hover:bg-violet-50"
+                  >
+                    <Shield className="w-4 h-4 mr-2" />
+                    Security Scan
+                  </Button>
+                  <Button
+                    size="sm"
                     onClick={() => toast.info("Deployment functionality ready - integrate with provisioner")}
                   >
                     <Rocket className="w-4 h-4 mr-2" />
@@ -455,6 +466,17 @@ export default function IaCTemplateManager() {
                     <pre className="p-4 bg-slate-900 text-slate-100 rounded-lg text-xs overflow-x-auto">
                       <code>{template.template_content}</code>
                     </pre>
+                  </div>
+                )}
+
+                {scanningTemplate === template.id && (
+                  <div className="mt-4">
+                    <AISecurityScanner 
+                      template={template}
+                      onRemediate={(issue) => {
+                        toast.success("Security fix suggested - review and apply");
+                      }}
+                    />
                   </div>
                 )}
               </div>
