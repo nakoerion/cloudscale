@@ -296,7 +296,7 @@ export default function ApplicationBuilder() {
   };
 
   const handleBack = () => {
-    if (currentStep > 0) setCurrentStep(currentStep - 0);
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
 
   const handleAIAnalysisComplete = (analysisData) => {
