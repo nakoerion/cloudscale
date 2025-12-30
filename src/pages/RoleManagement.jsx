@@ -13,12 +13,14 @@ import {
   Trash2,
   Lock,
   CheckCircle2,
-  XCircle
+  XCircle,
+  Activity
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import RoleEditor from "@/components/roles/RoleEditor";
 import PermissionMatrix from "@/components/roles/PermissionMatrix";
 import UserRoleManager from "@/components/roles/UserRoleManager";
+import AuditLogViewer from "@/components/roles/AuditLogViewer";
 import { toast } from "sonner";
 
 export default function RoleManagement() {
@@ -101,6 +103,9 @@ export default function RoleManagement() {
             </TabsTrigger>
             <TabsTrigger value="users" className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
               <Users className="w-4 h-4 mr-2" /> User Assignments
+            </TabsTrigger>
+            <TabsTrigger value="audit" className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700">
+              <Activity className="w-4 h-4 mr-2" /> Activity Log
             </TabsTrigger>
           </TabsList>
 
@@ -186,6 +191,11 @@ export default function RoleManagement() {
           {/* User Assignments Tab */}
           <TabsContent value="users">
             <UserRoleManager roles={roles} assignments={assignments} />
+          </TabsContent>
+
+          {/* Audit Log Tab */}
+          <TabsContent value="audit">
+            <AuditLogViewer />
           </TabsContent>
         </Tabs>
       </div>
