@@ -103,7 +103,11 @@ export default function CloudProviders() {
                 isConnected={!!account}
                 accountInfo={account}
                 onConnect={handleConnect}
-                onManage={() => {}}
+                onManage={(provider) => {
+                  import("sonner").then(({ toast }) => {
+                    toast.info(`Opening ${provider.toUpperCase()} management console...`);
+                  });
+                }}
               />
             );
           })}
