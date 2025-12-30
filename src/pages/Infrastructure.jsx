@@ -28,6 +28,8 @@ import DatabaseManager from "@/components/infrastructure/DatabaseManager";
 import CacheManager from "@/components/infrastructure/CacheManager";
 import AutoScalingManager from "@/components/infrastructure/AutoScalingManager";
 import HealthCheckManager from "@/components/infrastructure/HealthCheckManager";
+import IaCTemplateManager from "@/components/infrastructure/IaCTemplateManager";
+import IaCProvisioner from "@/components/infrastructure/IaCProvisioner";
 import { toast } from "sonner";
 
 const DEFAULT_TEMPLATES = [
@@ -188,8 +190,11 @@ export default function Infrastructure() {
           </Button>
         </div>
 
-        <Tabs defaultValue="database" className="w-full">
+        <Tabs defaultValue="iac" className="w-full">
           <TabsList className="bg-white border border-slate-200">
+            <TabsTrigger value="iac">
+              <Code className="w-4 h-4 mr-2" /> IaC Manager
+            </TabsTrigger>
             <TabsTrigger value="database">Database</TabsTrigger>
             <TabsTrigger value="caching">Caching</TabsTrigger>
             <TabsTrigger value="scaling">Auto-Scaling</TabsTrigger>
@@ -207,6 +212,13 @@ export default function Infrastructure() {
               <Shield className="w-4 h-4 mr-2" /> Security
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="iac" className="mt-6">
+            <div className="space-y-6">
+              <IaCTemplateManager />
+              <IaCProvisioner />
+            </div>
+          </TabsContent>
 
           <TabsContent value="database" className="mt-6">
             <DatabaseManager />
