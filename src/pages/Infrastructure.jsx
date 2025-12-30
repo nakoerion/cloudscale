@@ -32,6 +32,8 @@ import IaCTemplateManager from "@/components/infrastructure/IaCTemplateManager";
 import IaCProvisioner from "@/components/infrastructure/IaCProvisioner";
 import DeploymentStatusTracker from "@/components/infrastructure/DeploymentStatusTracker";
 import CostOptimizationRecommendations from "@/components/infrastructure/CostOptimizationRecommendations";
+import MultiCloudOrchestrator from "@/components/infrastructure/MultiCloudOrchestrator";
+import MultiCloudDashboard from "@/components/infrastructure/MultiCloudDashboard";
 import { toast } from "sonner";
 
 const DEFAULT_TEMPLATES = [
