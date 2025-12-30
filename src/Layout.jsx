@@ -38,7 +38,6 @@ const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "Dashboard" },
   { name: "Application Builder", icon: Layers, href: "ApplicationBuilder" },
   { name: "Cloud Providers", icon: Cloud, href: "CloudProviders" },
-  { name: "Visual Builder", icon: Paintbrush, href: "VisualBuilder" },
   { name: "Workflow Automation", icon: Workflow, href: "WorkflowAutomation" },
   { name: "Infrastructure", icon: Server, href: "Infrastructure" },
   { name: "Analytics", icon: Activity, href: "Analytics" },
