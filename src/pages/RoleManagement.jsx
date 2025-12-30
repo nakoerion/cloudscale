@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { initializeDefaultRoles } from "@/components/rbac/permissions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -26,6 +27,13 @@ export default function RoleManagement() {
   const [activeTab, setActiveTab] = useState("roles");
 
   const queryClient = useQueryClient();
+
+  // Initialize default roles on mount
+  useEffect(() => {
+    initializeDefaultRoles().then(() => {
+      queryClient.invalidateQueries({ queryKey: ["roles"] });
+    });
+  }, [queryClient]);
 
   const { data: roles = [], isLoading } = useQuery({
     queryKey: ["roles"],

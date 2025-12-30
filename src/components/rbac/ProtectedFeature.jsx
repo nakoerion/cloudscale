@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { hasPermission } from "@/utils/permissions";
+import { hasPermission } from "@/components/rbac/permissions";
 import { AlertTriangle } from "lucide-react";
 
 /**

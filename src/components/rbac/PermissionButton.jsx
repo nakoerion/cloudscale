@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { base44 } from "@/api/base44Client";
-import { hasPermission } from "@/utils/permissions";
+import { hasPermission } from "@/components/rbac/permissions";
 import { Lock } from "lucide-react";
 
 /**

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { getUserPermissions, hasPermission } from "@/utils/permissions";
+import { getUserPermissions, hasPermission } from "@/components/rbac/permissions";
 
 /**
  * usePermissions - React hook for checking user permissions
