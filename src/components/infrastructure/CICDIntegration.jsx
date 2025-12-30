@@ -57,9 +57,9 @@ jobs:
       
       - name: Notify CloudForge
         run: |
-          curl -X POST "${{ secrets.CLOUDFORGE_WEBHOOK_URL }}" \\
+          curl -X POST "\${{ secrets.CLOUDFORGE_WEBHOOK_URL }}" \\
             -H "Content-Type: application/json" \\
-            -d '{"status": "completed", "commit": "${{ github.sha }}"}'`;
+            -d '{"status": "completed", "commit": "\${{ github.sha }}"}'`;
 
 const GITLAB_CI = `stages:
   - validate
