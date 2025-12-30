@@ -152,6 +152,15 @@ export default function IaCProvisioner() {
                 </div>
               </div>
 
+              {formData.template_id && (
+                <CostEstimator
+                  template={templates.find(t => t.id === formData.template_id)}
+                  provider={formData.provider}
+                  region={formData.region}
+                  onEstimate={setEstimatedCost}
+                />
+              )}
+
               <div className="flex gap-3">
                 <Button onClick={handleProvision} disabled={provisionMutation.isPending}>
                   {provisionMutation.isPending ? "Provisioning..." : "Start Provisioning"}
