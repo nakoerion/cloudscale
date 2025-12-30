@@ -13,10 +13,13 @@ import {
   Clock,
   AlertTriangle,
   Terminal,
-  Trash2
+  Trash2,
+  Settings,
+  ExternalLink
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import CICDIntegration from "./CICDIntegration";
 
 const STATUS_CONFIG = {
   pending: { icon: Clock, color: "text-slate-500", bg: "bg-slate-100", label: "Pending" },
@@ -29,6 +32,7 @@ const STATUS_CONFIG = {
 
 export default function IaCProvisioner() {
   const [showProvisionForm, setShowProvisionForm] = useState(false);
+  const [selectedDeployment, setSelectedDeployment] = useState(null);
   const [formData, setFormData] = useState({
     template_id: "",
     provider: "aws",
@@ -223,6 +227,14 @@ export default function IaCProvisioner() {
                       <Terminal className="w-4 h-4 mr-2" />
                       View Logs
                     </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => setSelectedDeployment(deployment.id)}
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      CI/CD
+                    </Button>
                     {deployment.status === "completed" && (
                       <Button
                         size="sm"
@@ -234,6 +246,14 @@ export default function IaCProvisioner() {
                       </Button>
                     )}
                   </div>
+
+                  {selectedDeployment === deployment.id && (
+                    <div className="mt-4">
+                      <CICDIntegration 
+                        deploymentId={deployment.id}
+                      />
+                    </div>
+                  )}
                 </div>
               );
             })}

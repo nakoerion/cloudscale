@@ -30,6 +30,7 @@ import AutoScalingManager from "@/components/infrastructure/AutoScalingManager";
 import HealthCheckManager from "@/components/infrastructure/HealthCheckManager";
 import IaCTemplateManager from "@/components/infrastructure/IaCTemplateManager";
 import IaCProvisioner from "@/components/infrastructure/IaCProvisioner";
+import DeploymentStatusTracker from "@/components/infrastructure/DeploymentStatusTracker";
 import { toast } from "sonner";
 
 const DEFAULT_TEMPLATES = [
@@ -215,6 +216,7 @@ export default function Infrastructure() {
 
           <TabsContent value="iac" className="mt-6">
             <div className="space-y-6">
+              <DeploymentStatusTracker />
               <IaCTemplateManager />
               <IaCProvisioner />
             </div>
