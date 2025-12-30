@@ -15,11 +15,15 @@ import {
   Terminal,
   Trash2,
   Settings,
-  ExternalLink
+  ExternalLink,
+  DollarSign
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import CICDIntegration from "./CICDIntegration";
+import CostEstimator from "./CostEstimator";
+import CostTrendsChart from "./CostTrendsChart";
+import CostOptimizationRecommendations from "./CostOptimizationRecommendations";
 
 const STATUS_CONFIG = {
   pending: { icon: Clock, color: "text-slate-500", bg: "bg-slate-100", label: "Pending" },
@@ -33,6 +37,8 @@ const STATUS_CONFIG = {
 export default function IaCProvisioner() {
   const [showProvisionForm, setShowProvisionForm] = useState(false);
   const [selectedDeployment, setSelectedDeployment] = useState(null);
+  const [showCostDetails, setShowCostDetails] = useState(null);
+  const [estimatedCost, setEstimatedCost] = useState(0);
   const [formData, setFormData] = useState({
     template_id: "",
     provider: "aws",
@@ -83,7 +89,7 @@ export default function IaCProvisioner() {
     provisionMutation.mutate({
       ...formData,
       status: "planning",
-      cost_estimate: Math.random() * 500 + 50
+      cost_estimate: estimatedCost || Math.random() * 500 + 50
     });
   };
 
@@ -235,6 +241,14 @@ export default function IaCProvisioner() {
                       <Settings className="w-4 h-4 mr-2" />
                       CI/CD
                     </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => setShowCostDetails(showCostDetails === deployment.id ? null : deployment.id)}
+                    >
+                      <DollarSign className="w-4 h-4 mr-2" />
+                      Costs
+                    </Button>
                     {deployment.status === "completed" && (
                       <Button
                         size="sm"
@@ -252,6 +266,12 @@ export default function IaCProvisioner() {
                       <CICDIntegration 
                         deploymentId={deployment.id}
                       />
+                    </div>
+                  )}
+
+                  {showCostDetails === deployment.id && (
+                    <div className="mt-4 space-y-4">
+                      <CostTrendsChart deploymentId={deployment.id} />
                     </div>
                   )}
                 </div>

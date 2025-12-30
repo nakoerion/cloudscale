@@ -31,6 +31,7 @@ import HealthCheckManager from "@/components/infrastructure/HealthCheckManager";
 import IaCTemplateManager from "@/components/infrastructure/IaCTemplateManager";
 import IaCProvisioner from "@/components/infrastructure/IaCProvisioner";
 import DeploymentStatusTracker from "@/components/infrastructure/DeploymentStatusTracker";
+import CostOptimizationRecommendations from "@/components/infrastructure/CostOptimizationRecommendations";
 import { toast } from "sonner";
 
 const DEFAULT_TEMPLATES = [
@@ -217,7 +218,10 @@ export default function Infrastructure() {
           <TabsContent value="iac" className="mt-6">
             <div className="space-y-6">
               <DeploymentStatusTracker />
-              <IaCTemplateManager />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <IaCTemplateManager />
+                <CostOptimizationRecommendations />
+              </div>
               <IaCProvisioner />
             </div>
           </TabsContent>
