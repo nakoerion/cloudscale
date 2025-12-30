@@ -15,7 +15,8 @@ import {
   CheckCircle2,
   Edit,
   Wand2,
-  Plus
+  Plus,
+  Globe
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import TemplateEditor from "@/components/infrastructure/TemplateEditor";
@@ -199,6 +200,9 @@ export default function Infrastructure() {
             <TabsTrigger value="iac">
               <Code className="w-4 h-4 mr-2" /> IaC Manager
             </TabsTrigger>
+            <TabsTrigger value="multicloud">
+              <Globe className="w-4 h-4 mr-2" /> Multi-Cloud
+            </TabsTrigger>
             <TabsTrigger value="database">Database</TabsTrigger>
             <TabsTrigger value="caching">Caching</TabsTrigger>
             <TabsTrigger value="scaling">Auto-Scaling</TabsTrigger>
@@ -225,6 +229,17 @@ export default function Infrastructure() {
                 <CostOptimizationRecommendations />
               </div>
               <IaCProvisioner />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="multicloud" className="mt-6">
+            <div className="space-y-6">
+              <MultiCloudDashboard />
+              <MultiCloudOrchestrator 
+                onDeploy={(config) => {
+                  toast.success("Multi-cloud deployment initiated");
+                }}
+              />
             </div>
           </TabsContent>
 
