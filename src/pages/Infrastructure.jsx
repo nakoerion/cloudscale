@@ -35,6 +35,7 @@ import DeploymentStatusTracker from "@/components/infrastructure/DeploymentStatu
 import CostOptimizationRecommendations from "@/components/infrastructure/CostOptimizationRecommendations";
 import MultiCloudOrchestrator from "@/components/infrastructure/MultiCloudOrchestrator";
 import MultiCloudDashboard from "@/components/infrastructure/MultiCloudDashboard";
+import PipelineSecurityIntegration from "@/components/infrastructure/PipelineSecurityIntegration";
 import { toast } from "sonner";
 
 const DEFAULT_TEMPLATES = [
@@ -235,11 +236,14 @@ export default function Infrastructure() {
           <TabsContent value="multicloud" className="mt-6">
             <div className="space-y-6">
               <MultiCloudDashboard />
-              <MultiCloudOrchestrator 
-                onDeploy={(config) => {
-                  toast.success("Multi-cloud deployment initiated");
-                }}
-              />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <MultiCloudOrchestrator 
+                  onDeploy={(config) => {
+                    toast.success("Multi-cloud deployment initiated");
+                  }}
+                />
+                <PipelineSecurityIntegration />
+              </div>
             </div>
           </TabsContent>
 
