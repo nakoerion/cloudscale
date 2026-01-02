@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -7,12 +7,9 @@ import {
   Plus, 
   Search, 
   Layers, 
-  Cloud, 
-  GitBranch, 
   Activity,
   TrendingUp,
-  Zap,
-  Filter
+  Zap
 } from "lucide-react";
 import MetricCard from "@/components/dashboard/MetricCard";
 import ProjectCard from "@/components/dashboard/ProjectCard";
