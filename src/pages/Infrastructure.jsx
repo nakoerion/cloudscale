@@ -226,6 +226,7 @@ export default function Infrastructure() {
 
           <TabsContent value="iac" className="mt-6">
             <div className="space-y-6">
+              <ResourceDependencyGraph deployments={[]} pipelines={[]} />
               <DeploymentStatusTracker />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <IaCTemplateManager />

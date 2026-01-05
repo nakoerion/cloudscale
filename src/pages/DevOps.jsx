@@ -30,6 +30,7 @@ import DeploymentMetrics from "@/components/devops/DeploymentMetrics";
 import AIPipelineGenerator from "@/components/devops/AIPipelineGenerator";
 import DeploymentStrategySelector from "@/components/devops/DeploymentStrategySelector";
 import PipelineConfigGenerator from "@/components/devops/PipelineConfigGenerator";
+import ResourceDependencyGraph from "@/components/infrastructure/ResourceDependencyGraph";
 
 export default function DevOps() {
   const [showPipelineModal, setShowPipelineModal] = useState(false);
@@ -152,6 +153,7 @@ export default function DevOps() {
 
           <TabsContent value="pipelines">
             <div className="mb-6 space-y-6">
+              <ResourceDependencyGraph deployments={deployments} pipelines={pipelines} />
               <DeploymentMetrics />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <AIPipelineGenerator />
