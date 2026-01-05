@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import OnboardingWizard from "@/components/onboarding/OnboardingWizard";
+import AIOnboardingAssistant from "@/components/onboarding/AIOnboardingAssistant";
 import {
   LayoutDashboard,
   Cloud,
@@ -231,6 +232,7 @@ export default function Layout({ children, currentPageName }) {
         open={showOnboarding} 
         onClose={() => setShowOnboarding(false)} 
       />
+      <AIOnboardingAssistant user={user} currentPage={currentPageName} />
       </div>
       );
       }

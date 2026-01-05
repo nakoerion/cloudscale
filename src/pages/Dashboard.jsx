@@ -173,8 +173,18 @@ export default function Dashboard() {
 
         {/* AI Insights */}
         {visibleWidgets.includes("ai-insights") && (
-          <div className="mb-8">
+          <div className="mb-8 relative">
             <AIInsightsPanel />
+            {showFeatureTour && tourStep === 1 && (
+              <FeatureTourTooltip
+                feature={tourSteps[1]}
+                position="top"
+                step={2}
+                totalSteps={tourSteps.length}
+                onNext={handleTourNext}
+                onDismiss={handleTourDismiss}
+              />
+            )}
           </div>
         )}
 
