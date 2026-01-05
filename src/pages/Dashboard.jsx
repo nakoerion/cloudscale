@@ -18,6 +18,8 @@ import CreateProjectModal from "@/components/modals/CreateProjectModal";
 import AIInsightsPanel from "@/components/dashboard/AIInsightsPanel";
 import WidgetCustomizer from "@/components/dashboard/WidgetCustomizer";
 import GranularAnalytics from "@/components/dashboard/GranularAnalytics";
+import FeatureTourTooltip from "@/components/onboarding/FeatureTourTooltip";
+
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -25,6 +27,8 @@ export default function Dashboard() {
   const [visibleWidgets, setVisibleWidgets] = useState([
     "metrics", "projects", "ai-insights", "analytics", "activity"
   ]);
+  const [showFeatureTour, setShowFeatureTour] = useState(false);
+  const [tourStep, setTourStep] = useState(0);
   const queryClient = useQueryClient();
 
   const { data: projects = [], isLoading } = useQuery({
@@ -63,6 +67,11 @@ export default function Dashboard() {
   const avgUptime = projects.reduce((acc, p) => acc + (p.metrics?.uptime || 100), 0) / (projects.length || 1);
   const monthlyDeployments = deployments.length;
 
+  const tourSteps = [
+    { title: "Create Your First Project", description: "Click here to create a new project. Choose from templates or start from scratch." },
+    { title: "AI Insights", description: "Get intelligent recommendations to optimize your infrastructure and workflows." }
+  ];
+
   // Mock activity data
   const recentActivity = [
     { type: "deployment", title: "Production Deployed", description: "E-commerce App v2.1.0", time: new Date() },
@@ -96,13 +105,25 @@ export default function Dashboard() {
                 visibleWidgets={visibleWidgets}
                 onUpdateWidgets={setVisibleWidgets}
               />
-              <Button
-                onClick={() => setShowCreateModal(true)}
-                size="lg"
-                className="bg-white text-violet-700 hover:bg-violet-50 shadow-xl shadow-violet-900/20"
-              >
-                <Plus className="w-5 h-5 mr-2" /> New Project
-              </Button>
+              <div className="relative">
+                <Button
+                  onClick={() => setShowCreateModal(true)}
+                  size="lg"
+                  className="bg-white text-violet-700 hover:bg-violet-50 shadow-xl shadow-violet-900/20"
+                >
+                  <Plus className="w-5 h-5 mr-2" /> New Project
+                </Button>
+                {showFeatureTour && tourStep === 0 && (
+                  <FeatureTourTooltip
+                    feature={tourSteps[0]}
+                    position="bottom"
+                    step={1}
+                    totalSteps={2}
+                    onNext={() => setTourStep(1)}
+                    onDismiss={() => setShowFeatureTour(false)}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
