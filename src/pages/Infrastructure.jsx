@@ -37,6 +37,7 @@ import MultiCloudOrchestrator from "@/components/infrastructure/MultiCloudOrches
 import MultiCloudDashboard from "@/components/infrastructure/MultiCloudDashboard";
 import PipelineSecurityIntegration from "@/components/infrastructure/PipelineSecurityIntegration";
 import SecurityPolicyEnforcer from "@/components/security/SecurityPolicyEnforcer";
+import ResourceDependencyGraph from "@/components/infrastructure/ResourceDependencyGraph";
 import { toast } from "sonner";
 
 const DEFAULT_TEMPLATES = [
