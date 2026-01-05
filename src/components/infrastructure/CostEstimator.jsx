@@ -1,8 +1,10 @@
-import { useState } from "react";
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DollarSign, TrendingUp, TrendingDown, Info, AlertCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { base44 } from "@/api/base44Client";
+import { DollarSign, TrendingDown, AlertCircle, Sparkles, Loader2, Lightbulb, Info } from "lucide-react";
+import { toast } from "sonner";
 
 const PRICING_DATA = {
   aws: {
@@ -24,9 +26,10 @@ const PRICING_DATA = {
 
 export default function CostEstimator({ template, provider, region, onEstimate }) {
   const [breakdown, setBreakdown] = useState(null);
+  const [aiRecommendations, setAiRecommendations] = useState(null);
+  const [loadingAI, setLoadingAI] = useState(false);
 
   const calculateEstimate = () => {
-    // Simulate cost calculation based on template resources
     const resourceTypes = template?.resources || [];
     let compute = 0, storage = 0, network = 0, database = 0;
 
@@ -56,6 +59,75 @@ export default function CostEstimator({ template, provider, region, onEstimate }
 
     setBreakdown(estimate);
     onEstimate?.(estimate.total);
+  };
+
+  const getAIRecommendations = async () => {
+    if (!breakdown) return;
+    
+    setLoadingAI(true);
+    try {
+      const prompt = `Analyze this infrastructure cost breakdown and provide 3-4 specific optimization recommendations:
+
+Template: ${template?.name || 'Infrastructure'}
+Provider: ${provider}
+Region: ${region}
+Current Monthly Cost: $${breakdown.total.toFixed(2)}
+
+Cost Breakdown:
+- Compute: $${breakdown.compute.toFixed(2)}
+- Storage: $${breakdown.storage.toFixed(2)}
+- Database: $${breakdown.database.toFixed(2)}
+- Network: $${breakdown.network.toFixed(2)}
+
+Provide recommendations in this JSON format:
+{
+  "recommendations": [
+    {
+      "title": "<brief title>",
+      "description": "<specific recommendation>",
+      "potential_savings": <monthly savings amount>,
+      "priority": "<high|medium|low>",
+      "implementation_steps": ["<step 1>", "<step 2>"]
+    }
+  ]
+}
+
+Focus on:
+- Right-sizing resources
+- Reserved instances/savings plans
+- Storage tier optimization
+- Region-specific cost advantages`;
+
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            recommendations: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  potential_savings: { type: "number" },
+                  priority: { type: "string" },
+                  implementation_steps: { type: "array", items: { type: "string" } }
+                }
+              }
+            }
+          }
+        }
+      });
+
+      setAiRecommendations(result.recommendations);
+      toast.success("AI recommendations generated!");
+    } catch (error) {
+      toast.error("Failed to generate recommendations");
+      console.error(error);
+    } finally {
+      setLoadingAI(false);
+    }
   };
 
   return (
@@ -125,6 +197,63 @@ export default function CostEstimator({ template, provider, region, onEstimate }
                 </div>
               )}
             </div>
+
+            <Button
+              onClick={getAIRecommendations}
+              disabled={loadingAI}
+              variant="outline"
+              className="w-full border-violet-200 hover:bg-violet-50"
+            >
+              {loadingAI ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Generating AI Recommendations...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 mr-2 text-violet-600" />
+                  Get AI Optimization Tips
+                </>
+              )}
+            </Button>
+
+            {aiRecommendations && (
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center gap-2">
+                  <Lightbulb className="w-5 h-5 text-amber-500" />
+                  <h4 className="font-semibold text-slate-900">AI Recommendations</h4>
+                </div>
+                {aiRecommendations.map((rec, i) => (
+                  <div key={i} className="p-4 bg-gradient-to-br from-violet-50 to-indigo-50 border border-violet-200 rounded-xl">
+                    <div className="flex items-start justify-between mb-2">
+                      <h5 className="font-semibold text-slate-900">{rec.title}</h5>
+                      <Badge className={
+                        rec.priority === 'high' ? 'bg-red-100 text-red-700' :
+                        rec.priority === 'medium' ? 'bg-amber-100 text-amber-700' :
+                        'bg-blue-100 text-blue-700'
+                      }>
+                        {rec.priority}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-slate-600 mb-3">{rec.description}</p>
+                    <div className="flex items-center gap-2 mb-3">
+                      <TrendingDown className="w-4 h-4 text-emerald-600" />
+                      <span className="text-sm font-semibold text-emerald-700">
+                        Save up to ${rec.potential_savings?.toFixed(2) || '0.00'}/month
+                      </span>
+                    </div>
+                    <div className="space-y-1.5">
+                      {rec.implementation_steps?.map((step, j) => (
+                        <div key={j} className="flex items-start gap-2">
+                          <span className="text-xs font-medium text-violet-600 mt-0.5">{j + 1}.</span>
+                          <p className="text-xs text-slate-600">{step}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
               <div className="flex items-start gap-2">
