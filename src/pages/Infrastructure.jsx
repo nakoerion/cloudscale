@@ -36,6 +36,7 @@ import CostOptimizationRecommendations from "@/components/infrastructure/CostOpt
 import MultiCloudOrchestrator from "@/components/infrastructure/MultiCloudOrchestrator";
 import MultiCloudDashboard from "@/components/infrastructure/MultiCloudDashboard";
 import PipelineSecurityIntegration from "@/components/infrastructure/PipelineSecurityIntegration";
+import SecurityPolicyEnforcer from "@/components/security/SecurityPolicyEnforcer";
 import { toast } from "sonner";
 
 const DEFAULT_TEMPLATES = [
@@ -242,8 +243,9 @@ export default function Infrastructure() {
                     toast.success("Multi-cloud deployment initiated");
                   }}
                 />
-                <PipelineSecurityIntegration />
+                <SecurityPolicyEnforcer />
               </div>
+              <PipelineSecurityIntegration />
             </div>
           </TabsContent>
 

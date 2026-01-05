@@ -43,6 +43,7 @@ const navigation = [
   { name: "Analytics", icon: Activity, href: "Analytics" },
   { name: "Monitoring", icon: Activity, href: "Monitoring" },
   { name: "DevOps", icon: GitBranch, href: "DevOps" },
+  { name: "Security", icon: Shield, href: "SecurityDashboard" },
   { name: "Integrations", icon: Zap, href: "Integrations" },
   { name: "Support", icon: Shield, href: "Support" },
   { name: "Billing", icon: Shield, href: "Billing" },

@@ -13,6 +13,7 @@ import SLAContracts from './pages/SLAContracts';
 import Support from './pages/Support';
 import VisualBuilder from './pages/VisualBuilder';
 import WorkflowAutomation from './pages/WorkflowAutomation';
+import SecurityDashboard from './pages/SecurityDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -32,6 +33,7 @@ export const PAGES = {
     "Support": Support,
     "VisualBuilder": VisualBuilder,
     "WorkflowAutomation": WorkflowAutomation,
+    "SecurityDashboard": SecurityDashboard,
 }
 
 export const pagesConfig = {
