@@ -7,6 +7,7 @@ import { Cloud, Plus, RefreshCw, Settings } from "lucide-react";
 import CloudProviderCard from "@/components/dashboard/CloudProviderCard";
 import ConnectCloudModal from "@/components/modals/ConnectCloudModal";
 import MetricCard from "@/components/dashboard/MetricCard";
+import AICostOptimizer from "@/components/cloud/AICostOptimizer";
 import { toast } from "sonner";
 
 const ALL_PROVIDERS = ["aws", "azure", "gcp", "alibaba", "ibm", "oracle"];
@@ -91,6 +92,11 @@ export default function CloudProviders() {
             iconColor="text-amber-500"
             iconBg="bg-amber-50"
           />
+        </div>
+
+        {/* AI Cost Optimizer */}
+        <div className="mb-8">
+          <AICostOptimizer cloudAccounts={cloudAccounts} />
         </div>
 
         {/* Cloud Providers Grid */}
