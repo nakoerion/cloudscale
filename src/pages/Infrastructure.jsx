@@ -38,6 +38,7 @@ import MultiCloudDashboard from "@/components/infrastructure/MultiCloudDashboard
 import PipelineSecurityIntegration from "@/components/infrastructure/PipelineSecurityIntegration";
 import SecurityPolicyEnforcer from "@/components/security/SecurityPolicyEnforcer";
 import ResourceDependencyGraph from "@/components/infrastructure/ResourceDependencyGraph";
+import PredictiveCostAnalyzer from "@/components/cloud/PredictiveCostAnalyzer";
 import { toast } from "sonner";
 
 const DEFAULT_TEMPLATES = [
@@ -230,8 +231,9 @@ export default function Infrastructure() {
               <DeploymentStatusTracker />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <IaCTemplateManager />
-                <CostOptimizationRecommendations />
+                <PredictiveCostAnalyzer templates={templates} currentSpend={0} />
               </div>
+              <CostOptimizationRecommendations />
               <IaCProvisioner />
             </div>
           </TabsContent>

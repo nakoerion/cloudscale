@@ -254,12 +254,29 @@ Focus on realistic recommendations like:
                       ))}
                     </div>
 
-                    <Button 
-                      className="w-full mt-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
-                      onClick={() => toast.success("Optimization guide opened - implementation started")}
-                    >
-                      Implement Optimization
-                    </Button>
+                    <div className="flex gap-2 mt-4">
+                      <Button 
+                        className="flex-1 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
+                        onClick={() => toast.success("Optimization guide opened - implementation started")}
+                      >
+                        Implement Now
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={async () => {
+                          await base44.entities.IaCCostTracking.create({
+                            deployment_id: "auto-optimizer",
+                            date: new Date().toISOString().split('T')[0],
+                            estimated_cost: rec.current_cost,
+                            provider: rec.provider,
+                            optimization_potential: rec.savings
+                          });
+                          toast.success("Scheduled for automated implementation");
+                        }}
+                      >
+                        Auto-Schedule
+                      </Button>
+                    </div>
                   </div>
                 );
               })}

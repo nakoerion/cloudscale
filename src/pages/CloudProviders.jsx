@@ -8,6 +8,7 @@ import CloudProviderCard from "@/components/dashboard/CloudProviderCard";
 import ConnectCloudModal from "@/components/modals/ConnectCloudModal";
 import MetricCard from "@/components/dashboard/MetricCard";
 import AICostOptimizer from "@/components/cloud/AICostOptimizer";
+import PredictiveCostAnalyzer from "@/components/cloud/PredictiveCostAnalyzer";
 import { toast } from "sonner";
 
 const ALL_PROVIDERS = ["aws", "azure", "gcp", "alibaba", "ibm", "oracle"];
@@ -95,8 +96,12 @@ export default function CloudProviders() {
         </div>
 
         {/* AI Cost Optimizer */}
-        <div className="mb-8">
+        <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <AICostOptimizer cloudAccounts={cloudAccounts} />
+          <PredictiveCostAnalyzer 
+            templates={[]}
+            currentSpend={cloudAccounts.reduce((sum, acc) => sum + (acc.monthly_spend || 0), 0)}
+          />
         </div>
 
         {/* Cloud Providers Grid */}
