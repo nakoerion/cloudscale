@@ -46,6 +46,7 @@ import TestingValidator from "@/components/builder/TestingValidator";
 import CloudDeploymentWizard from "@/components/builder/CloudDeploymentWizard";
 import PublishWizard from "@/components/builder/PublishWizard";
 import AppAnalyticsDashboard from "@/components/analytics/AppAnalyticsDashboard";
+import AIContentGenerator from "@/components/builder/AIContentGenerator";
 
 const STEPS = [
   { id: 0, name: "Describe Idea", icon: Lightbulb },
@@ -785,6 +786,14 @@ export default function ApplicationBuilder() {
                   </div>
                 );
               })}
+
+              {/* AI Content Generator */}
+              <div className="pt-6 border-t border-slate-200">
+                <AIContentGenerator 
+                  formData={formData} 
+                  template={TEMPLATES.find(t => t.id === formData.template)?.name}
+                />
+              </div>
             </div>
           )}
 
