@@ -126,7 +126,9 @@ export default function CloudDeploymentWizard({ formData, onComplete, onUpdate }
     setDeploymentResult(result);
     toast.success("Application deployed successfully!");
     setIsDeploying(false);
-    onComplete(result);
+    if (onComplete) {
+      onComplete(result);
+    }
   };
 
   if (deploymentResult) {
@@ -223,12 +225,14 @@ export default function CloudDeploymentWizard({ formData, onComplete, onUpdate }
           </div>
         </div>
 
-        <Button
-          onClick={() => onComplete(deploymentResult)}
-          className="w-full py-6 text-lg rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
-        >
-          Continue <ArrowRight className="w-5 h-5 ml-2" />
-        </Button>
+        {onComplete && (
+          <Button
+            onClick={() => onComplete(deploymentResult)}
+            className="w-full py-6 text-lg rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
+          >
+            Continue <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
+        )}
       </div>
     );
   }
