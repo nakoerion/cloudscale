@@ -25,6 +25,10 @@ import FeatureAdoptionMetrics from "@/components/analytics/FeatureAdoptionMetric
 import UserEngagementMetrics from "@/components/analytics/UserEngagementMetrics";
 import BehaviorPredictionEngine from "@/components/analytics/BehaviorPredictionEngine";
 import AnalyticsWidgetManager from "@/components/analytics/AnalyticsWidgetManager";
+import AIAnomalyDetection from "@/components/analytics/AIAnomalyDetection";
+import InfrastructureCostOptimizer from "@/components/analytics/InfrastructureCostOptimizer";
+import AutomatedAlertSystem from "@/components/analytics/AutomatedAlertSystem";
+import PerformancePredictionEngine from "@/components/analytics/PerformancePredictionEngine";
 
 export default function Analytics() {
   const [timeRange, setTimeRange] = useState("7d");
@@ -139,7 +143,10 @@ export default function Analytics() {
             <TabsTrigger value="reports" className="data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-700 rounded-lg">
               <Calendar className="w-4 h-4 mr-2" /> Reports
             </TabsTrigger>
-          </TabsList>
+            <TabsTrigger value="ai-suite" className="data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-700 rounded-lg">
+              <Brain className="w-4 h-4 mr-2" /> AI Suite
+            </TabsTrigger>
+            </TabsList>
 
           <TabsContent value="overview">
             <div className="space-y-6">
@@ -193,6 +200,25 @@ export default function Analytics() {
             <div className="space-y-6">
               {widgets.find(w => w.id === "performance" && w.enabled) && <PerformanceReports />}
               <FeatureAdoptionMetrics />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="ai-suite">
+            <div className="space-y-6">
+              <div className="p-6 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl">
+                <h3 className="text-xl font-bold text-purple-900 mb-2">🤖 AI-Powered Analytics Suite</h3>
+                <p className="text-purple-700">Advanced AI capabilities for predictive insights, anomaly detection, cost optimization, and automated alerting.</p>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <PerformancePredictionEngine />
+                <AIAnomalyDetection />
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <InfrastructureCostOptimizer />
+                <AutomatedAlertSystem />
+              </div>
             </div>
           </TabsContent>
         </Tabs>
