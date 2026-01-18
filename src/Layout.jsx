@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "Dashboard" },
   { name: "Application Builder", icon: Layers, href: "ApplicationBuilder" },
+  { name: "Database", icon: Server, href: "Database" },
   { name: "Cloud Providers", icon: Cloud, href: "CloudProviders" },
   { name: "Workflow Automation", icon: Workflow, href: "WorkflowAutomation" },
   { name: "Infrastructure", icon: Server, href: "Infrastructure" },

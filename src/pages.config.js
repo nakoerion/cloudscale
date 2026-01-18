@@ -14,6 +14,7 @@ import SecurityDashboard from './pages/SecurityDashboard';
 import Support from './pages/Support';
 import VisualBuilder from './pages/VisualBuilder';
 import WorkflowAutomation from './pages/WorkflowAutomation';
+import Database from './pages/Database';
 import __Layout from './Layout.jsx';
 
 
@@ -34,6 +35,7 @@ export const PAGES = {
     "Support": Support,
     "VisualBuilder": VisualBuilder,
     "WorkflowAutomation": WorkflowAutomation,
+    "Database": Database,
 }
 
 export const pagesConfig = {
