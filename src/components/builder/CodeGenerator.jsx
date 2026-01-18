@@ -14,10 +14,12 @@ import {
   Database,
   Server,
   Layers,
-  FileCode
+  FileCode,
+  Wand2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import AICodeRefactoring from "./AICodeRefactoring";
 
 export default function CodeGenerator({ appDescription, formData, onComplete }) {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -27,6 +29,8 @@ export default function CodeGenerator({ appDescription, formData, onComplete }) 
     backend: "nodejs",
     database: "postgresql"
   });
+  const [showRefactoring, setShowRefactoring] = useState(false);
+  const [selectedCodeForRefactor, setSelectedCodeForRefactor] = useState({ code: "", type: "", key: "" });
 
   const generateCode = async () => {
     setIsGenerating(true);
@@ -154,6 +158,54 @@ export default function CodeGenerator({ appDescription, formData, onComplete }) 
     a.click();
     URL.revokeObjectURL(url);
     toast.success("Downloaded successfully!");
+  };
+
+  const openRefactoring = (code, type, key) => {
+    setSelectedCodeForRefactor({ code, type, key });
+    setShowRefactoring(true);
+  };
+
+  const applyRefactoredCode = (newCode) => {
+    if (!generatedCode || !selectedCodeForRefactor.key) return;
+
+    const { key } = selectedCodeForRefactor;
+    
+    if (key.startsWith("backend.")) {
+      const field = key.replace("backend.", "");
+      if (field.startsWith("endpoint_")) {
+        const idx = parseInt(field.replace("endpoint_", ""));
+        const updatedEndpoints = [...generatedCode.backend.api_endpoints];
+        updatedEndpoints[idx] = { ...updatedEndpoints[idx], code: newCode };
+        setGeneratedCode({
+          ...generatedCode,
+          backend: { ...generatedCode.backend, api_endpoints: updatedEndpoints }
+        });
+      } else {
+        setGeneratedCode({
+          ...generatedCode,
+          backend: { ...generatedCode.backend, [field]: newCode }
+        });
+      }
+    } else if (key.startsWith("frontend.")) {
+      const field = key.replace("frontend.", "");
+      if (field.startsWith("component_")) {
+        const idx = parseInt(field.replace("component_", ""));
+        const updatedComponents = [...generatedCode.frontend.components];
+        updatedComponents[idx] = { ...updatedComponents[idx], code: newCode };
+        setGeneratedCode({
+          ...generatedCode,
+          frontend: { ...generatedCode.frontend, components: updatedComponents }
+        });
+      } else {
+        setGeneratedCode({
+          ...generatedCode,
+          frontend: { ...generatedCode.frontend, [field]: newCode }
+        });
+      }
+    }
+    
+    setShowRefactoring(false);
+    toast.success("Refactored code applied!");
   };
 
   return (
@@ -321,6 +373,14 @@ export default function CodeGenerator({ appDescription, formData, onComplete }) 
                     <Button 
                       size="sm" 
                       variant="ghost"
+                      onClick={() => openRefactoring(generatedCode.backend.database_schema, "SQL Schema", "backend.database_schema")}
+                      title="AI Refactor"
+                    >
+                      <Wand2 className="w-4 h-4 text-indigo-600" />
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="ghost"
                       onClick={() => copyToClipboard(generatedCode.backend.database_schema)}
                     >
                       <Copy className="w-4 h-4" />
@@ -344,6 +404,14 @@ export default function CodeGenerator({ appDescription, formData, onComplete }) 
                 <div className="bg-slate-50 border-b border-slate-200 p-4 flex items-center justify-between">
                   <h4 className="font-semibold text-slate-900">Models</h4>
                   <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      variant="ghost"
+                      onClick={() => openRefactoring(generatedCode.backend.models, "Model definitions", "backend.models")}
+                      title="AI Refactor"
+                    >
+                      <Wand2 className="w-4 h-4 text-indigo-600" />
+                    </Button>
                     <Button 
                       size="sm" 
                       variant="ghost"
@@ -375,6 +443,14 @@ export default function CodeGenerator({ appDescription, formData, onComplete }) 
                     <Button 
                       size="sm" 
                       variant="ghost"
+                      onClick={() => openRefactoring(generatedCode.frontend.app_structure, "React Component", "frontend.app_structure")}
+                      title="AI Refactor"
+                    >
+                      <Wand2 className="w-4 h-4 text-indigo-600" />
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="ghost"
                       onClick={() => copyToClipboard(generatedCode.frontend.app_structure)}
                     >
                       <Copy className="w-4 h-4" />
@@ -399,6 +475,14 @@ export default function CodeGenerator({ appDescription, formData, onComplete }) 
                   <div className="bg-slate-50 border-b border-slate-200 p-4 flex items-center justify-between">
                     <h4 className="font-semibold text-slate-900">{component.name}</h4>
                     <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => openRefactoring(component.code, "React Component", `frontend.component_${i}`)}
+                        title="AI Refactor"
+                      >
+                        <Wand2 className="w-4 h-4 text-indigo-600" />
+                      </Button>
                       <Button 
                         size="sm" 
                         variant="ghost"
@@ -441,6 +525,25 @@ export default function CodeGenerator({ appDescription, formData, onComplete }) 
               Continue to Deployment
             </Button>
           </div>
+
+          {/* AI Refactoring Panel */}
+          {showRefactoring && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-auto">
+                <div className="p-4 border-b flex items-center justify-between">
+                  <h3 className="font-semibold text-lg">AI Code Refactoring</h3>
+                  <Button variant="ghost" size="sm" onClick={() => setShowRefactoring(false)}>✕</Button>
+                </div>
+                <div className="p-4">
+                  <AICodeRefactoring 
+                    code={selectedCodeForRefactor.code}
+                    codeType={selectedCodeForRefactor.type}
+                    onApply={applyRefactoredCode}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
