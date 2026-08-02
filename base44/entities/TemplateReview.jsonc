@@ -1,0 +1,33 @@
+{
+  "name": "TemplateReview",
+  "type": "object",
+  "properties": {
+    "template_id": {
+      "type": "string",
+      "description": "Community template ID"
+    },
+    "reviewer_email": {
+      "type": "string"
+    },
+    "reviewer_name": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "review_text": {
+      "type": "string"
+    },
+    "helpful_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "template_id",
+    "reviewer_email",
+    "rating"
+  ]
+}

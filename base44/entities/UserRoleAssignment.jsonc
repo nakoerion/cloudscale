@@ -1,0 +1,35 @@
+{
+  "name": "UserRoleAssignment",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User email"
+    },
+    "role_id": {
+      "type": "string",
+      "description": "Role ID"
+    },
+    "assigned_by": {
+      "type": "string",
+      "description": "Email of user who assigned the role"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "global",
+        "project"
+      ],
+      "default": "global",
+      "description": "Role scope"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project ID if scope is project-specific"
+    }
+  },
+  "required": [
+    "user_email",
+    "role_id"
+  ]
+}

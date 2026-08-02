@@ -1,0 +1,66 @@
+{
+  "name": "IaCCostTracking",
+  "type": "object",
+  "properties": {
+    "deployment_id": {
+      "type": "string",
+      "description": "IaC deployment ID"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Tracking date"
+    },
+    "estimated_cost": {
+      "type": "number",
+      "description": "Estimated monthly cost"
+    },
+    "actual_cost": {
+      "type": "number",
+      "description": "Actual cost incurred"
+    },
+    "cost_breakdown": {
+      "type": "object",
+      "properties": {
+        "compute": {
+          "type": "number"
+        },
+        "storage": {
+          "type": "number"
+        },
+        "network": {
+          "type": "number"
+        },
+        "database": {
+          "type": "number"
+        },
+        "other": {
+          "type": "number"
+        }
+      },
+      "description": "Cost breakdown by category"
+    },
+    "provider": {
+      "type": "string",
+      "enum": [
+        "aws",
+        "azure",
+        "gcp"
+      ],
+      "description": "Cloud provider"
+    },
+    "region": {
+      "type": "string",
+      "description": "Deployment region"
+    },
+    "optimization_potential": {
+      "type": "number",
+      "description": "Potential monthly savings"
+    }
+  },
+  "required": [
+    "deployment_id",
+    "date",
+    "provider"
+  ]
+}

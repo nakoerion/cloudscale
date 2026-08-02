@@ -1,0 +1,83 @@
+{
+  "name": "Tenant",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Tenant/Organization name"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly identifier"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Custom domain"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "trial",
+        "churned"
+      ],
+      "default": "trial"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "free",
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "default": "free"
+    },
+    "isolation_level": {
+      "type": "string",
+      "enum": [
+        "shared",
+        "dedicated_schema",
+        "dedicated_database"
+      ],
+      "default": "shared",
+      "description": "Data isolation strategy"
+    },
+    "database_connection": {
+      "type": "object",
+      "description": "Tenant-specific DB connection details"
+    },
+    "max_users": {
+      "type": "number",
+      "default": 5
+    },
+    "max_storage_gb": {
+      "type": "number",
+      "default": 10
+    },
+    "current_users": {
+      "type": "number",
+      "default": 0
+    },
+    "current_storage_gb": {
+      "type": "number",
+      "default": 0
+    },
+    "admin_email": {
+      "type": "string"
+    },
+    "billing_email": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Custom tenant metadata"
+    }
+  },
+  "required": [
+    "name",
+    "slug",
+    "admin_email"
+  ]
+}

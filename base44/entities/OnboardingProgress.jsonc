@@ -1,0 +1,47 @@
+{
+  "name": "OnboardingProgress",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User's email"
+    },
+    "app_type": {
+      "type": "string",
+      "description": "Type of app user is building"
+    },
+    "app_description": {
+      "type": "string",
+      "description": "User's app description"
+    },
+    "completed_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "current_step": {
+      "type": "string",
+      "default": "welcome"
+    },
+    "personalized_tips": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "AI-generated personalized tips"
+    },
+    "is_completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "skipped": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

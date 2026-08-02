@@ -1,0 +1,60 @@
+{
+  "name": "CloudAccount",
+  "type": "object",
+  "properties": {
+    "provider": {
+      "type": "string",
+      "enum": [
+        "aws",
+        "azure",
+        "gcp",
+        "alibaba",
+        "ibm",
+        "oracle"
+      ]
+    },
+    "account_name": {
+      "type": "string"
+    },
+    "account_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "connected",
+        "disconnected",
+        "error",
+        "pending"
+      ],
+      "default": "pending"
+    },
+    "regions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "default_region": {
+      "type": "string"
+    },
+    "monthly_spend": {
+      "type": "number"
+    },
+    "resources_count": {
+      "type": "number"
+    },
+    "last_synced": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "credentials_valid": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "provider",
+    "account_name"
+  ]
+}

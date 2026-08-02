@@ -1,0 +1,113 @@
+{
+  "name": "Role",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Role name (e.g., Editor, Viewer, Contributor)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Role description"
+    },
+    "permissions": {
+      "type": "object",
+      "description": "Permission configuration",
+      "properties": {
+        "projects": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean"
+            },
+            "create": {
+              "type": "boolean"
+            },
+            "edit": {
+              "type": "boolean"
+            },
+            "delete": {
+              "type": "boolean"
+            },
+            "deploy": {
+              "type": "boolean"
+            }
+          }
+        },
+        "templates": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean"
+            },
+            "create": {
+              "type": "boolean"
+            },
+            "edit": {
+              "type": "boolean"
+            },
+            "delete": {
+              "type": "boolean"
+            },
+            "publish": {
+              "type": "boolean"
+            }
+          }
+        },
+        "infrastructure": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean"
+            },
+            "manage": {
+              "type": "boolean"
+            }
+          }
+        },
+        "integrations": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean"
+            },
+            "install": {
+              "type": "boolean"
+            },
+            "configure": {
+              "type": "boolean"
+            }
+          }
+        },
+        "users": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean"
+            },
+            "invite": {
+              "type": "boolean"
+            },
+            "manage_roles": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "is_system_role": {
+      "type": "boolean",
+      "default": false,
+      "description": "System roles cannot be deleted"
+    },
+    "user_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of users with this role"
+    }
+  },
+  "required": [
+    "name",
+    "permissions"
+  ]
+}

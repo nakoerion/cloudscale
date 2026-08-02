@@ -1,0 +1,78 @@
+{
+  "name": "SupportTicket",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Ticket title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "technical",
+        "billing",
+        "feature_request",
+        "bug",
+        "account",
+        "general"
+      ],
+      "description": "AI-generated category"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium",
+      "description": "AI-determined priority"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "waiting_response",
+        "resolved",
+        "closed"
+      ],
+      "default": "open"
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "neutral",
+        "negative",
+        "frustrated"
+      ],
+      "description": "AI-analyzed sentiment"
+    },
+    "sentiment_score": {
+      "type": "number",
+      "description": "Sentiment score from -1 to 1"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Support agent email"
+    },
+    "ai_suggested_response": {
+      "type": "string",
+      "description": "AI-generated suggested response"
+    },
+    "resolution": {
+      "type": "string",
+      "description": "Resolution details"
+    }
+  },
+  "required": [
+    "title",
+    "description"
+  ]
+}

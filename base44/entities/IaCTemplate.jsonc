@@ -1,0 +1,82 @@
+{
+  "name": "IaCTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Template name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Template description"
+    },
+    "provider": {
+      "type": "string",
+      "enum": [
+        "aws",
+        "azure",
+        "gcp",
+        "multi-cloud"
+      ],
+      "description": "Target cloud provider"
+    },
+    "iac_tool": {
+      "type": "string",
+      "enum": [
+        "terraform",
+        "pulumi"
+      ],
+      "default": "terraform",
+      "description": "IaC tool to use"
+    },
+    "template_type": {
+      "type": "string",
+      "enum": [
+        "compute",
+        "storage",
+        "database",
+        "networking",
+        "kubernetes",
+        "serverless",
+        "complete-stack"
+      ],
+      "description": "Type of infrastructure"
+    },
+    "template_content": {
+      "type": "string",
+      "description": "IaC template code"
+    },
+    "variables": {
+      "type": "object",
+      "description": "Template variables"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "validated",
+        "deployed",
+        "failed"
+      ],
+      "default": "draft"
+    },
+    "last_deployed": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "deployment_count": {
+      "type": "number",
+      "default": 0
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Associated project"
+    }
+  },
+  "required": [
+    "name",
+    "provider",
+    "iac_tool",
+    "template_type"
+  ]
+}

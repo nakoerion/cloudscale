@@ -1,0 +1,86 @@
+{
+  "name": "SLAContract",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "basic",
+        "professional",
+        "enterprise"
+      ],
+      "default": "basic"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "pending",
+        "expired",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "uptime_guarantee": {
+      "type": "number",
+      "description": "Uptime percentage guarantee"
+    },
+    "support_level": {
+      "type": "string",
+      "enum": [
+        "email",
+        "priority",
+        "24-7-dedicated"
+      ],
+      "default": "email"
+    },
+    "response_time_hours": {
+      "type": "number"
+    },
+    "rpo_hours": {
+      "type": "number",
+      "description": "Recovery Point Objective in hours"
+    },
+    "rto_hours": {
+      "type": "number",
+      "description": "Recovery Time Objective in hours"
+    },
+    "backup_frequency": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "hourly",
+        "real-time"
+      ],
+      "default": "daily"
+    },
+    "monthly_price": {
+      "type": "number"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "auto_renew": {
+      "type": "boolean",
+      "default": true
+    },
+    "included_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "project_id",
+    "tier"
+  ]
+}

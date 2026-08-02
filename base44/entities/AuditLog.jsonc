@@ -1,0 +1,57 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "role_created",
+        "role_updated",
+        "role_deleted",
+        "role_assigned",
+        "role_removed",
+        "permission_granted",
+        "permission_revoked"
+      ],
+      "description": "Type of action performed"
+    },
+    "resource_type": {
+      "type": "string",
+      "enum": [
+        "role",
+        "user",
+        "permission"
+      ],
+      "description": "Type of resource affected"
+    },
+    "resource_id": {
+      "type": "string",
+      "description": "ID of the affected resource"
+    },
+    "resource_name": {
+      "type": "string",
+      "description": "Name of the affected resource"
+    },
+    "performed_by": {
+      "type": "string",
+      "description": "Email of user who performed the action"
+    },
+    "target_user": {
+      "type": "string",
+      "description": "Email of affected user (for assignments)"
+    },
+    "details": {
+      "type": "object",
+      "description": "Additional action details"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of the user"
+    }
+  },
+  "required": [
+    "action",
+    "resource_type",
+    "performed_by"
+  ]
+}

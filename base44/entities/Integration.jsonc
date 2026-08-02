@@ -1,0 +1,85 @@
+{
+  "name": "Integration",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "payment",
+        "analytics",
+        "authentication",
+        "storage",
+        "messaging",
+        "database",
+        "monitoring",
+        "security",
+        "api"
+      ],
+      "default": "api"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "icon_url": {
+      "type": "string"
+    },
+    "is_premium": {
+      "type": "boolean",
+      "default": false
+    },
+    "pricing": {
+      "type": "string",
+      "enum": [
+        "free",
+        "freemium",
+        "paid"
+      ],
+      "default": "free"
+    },
+    "monthly_price": {
+      "type": "number"
+    },
+    "documentation_url": {
+      "type": "string"
+    },
+    "setup_complexity": {
+      "type": "string",
+      "enum": [
+        "easy",
+        "medium",
+        "advanced"
+      ],
+      "default": "easy"
+    },
+    "rating": {
+      "type": "number"
+    },
+    "install_count": {
+      "type": "number",
+      "default": 0
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supported_clouds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "category",
+    "provider"
+  ]
+}

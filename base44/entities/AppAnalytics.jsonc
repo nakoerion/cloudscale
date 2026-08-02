@@ -1,0 +1,47 @@
+{
+  "name": "AppAnalytics",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "Project ID"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "page_views": {
+      "type": "number",
+      "default": 0
+    },
+    "unique_visitors": {
+      "type": "number",
+      "default": 0
+    },
+    "api_calls": {
+      "type": "number",
+      "default": 0
+    },
+    "avg_response_time": {
+      "type": "number",
+      "default": 0
+    },
+    "error_count": {
+      "type": "number",
+      "default": 0
+    },
+    "top_pages": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "geographic_data": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "project_id",
+    "date"
+  ]
+}

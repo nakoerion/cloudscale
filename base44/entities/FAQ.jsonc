@@ -1,0 +1,46 @@
+{
+  "name": "FAQ",
+  "type": "object",
+  "properties": {
+    "question": {
+      "type": "string",
+      "description": "FAQ question"
+    },
+    "answer": {
+      "type": "string",
+      "description": "FAQ answer"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "getting_started",
+        "billing",
+        "technical",
+        "features",
+        "account",
+        "integrations"
+      ],
+      "default": "general"
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Search keywords"
+    },
+    "helpful_count": {
+      "type": "number",
+      "default": 0
+    },
+    "not_helpful_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "question",
+    "answer",
+    "category"
+  ]
+}

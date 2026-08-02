@@ -1,0 +1,90 @@
+{
+  "name": "Pipeline",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "Associated project ID"
+    },
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "ci",
+        "cd",
+        "ci-cd"
+      ],
+      "default": "ci-cd"
+    },
+    "provider": {
+      "type": "string",
+      "enum": [
+        "github-actions",
+        "gitlab-ci",
+        "jenkins",
+        "circleci",
+        "azure-devops"
+      ],
+      "default": "github-actions"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "failed",
+        "running"
+      ],
+      "default": "active"
+    },
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "push",
+        "pull_request",
+        "schedule",
+        "manual"
+      ],
+      "default": "push"
+    },
+    "branch": {
+      "type": "string",
+      "default": "main"
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "last_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "success_rate": {
+      "type": "number",
+      "default": 100
+    },
+    "avg_duration": {
+      "type": "number",
+      "description": "Average duration in seconds"
+    }
+  },
+  "required": [
+    "project_id",
+    "name"
+  ]
+}

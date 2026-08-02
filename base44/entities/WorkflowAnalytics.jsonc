@@ -1,0 +1,70 @@
+{
+  "name": "WorkflowAnalytics",
+  "type": "object",
+  "properties": {
+    "workflow_id": {
+      "type": "string",
+      "description": "Reference to workflow"
+    },
+    "execution_count": {
+      "type": "number",
+      "default": 0
+    },
+    "avg_execution_time": {
+      "type": "number",
+      "description": "Average execution time in seconds"
+    },
+    "success_rate": {
+      "type": "number",
+      "description": "Success rate percentage"
+    },
+    "bottlenecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "node_id": {
+            "type": "string"
+          },
+          "avg_duration": {
+            "type": "number"
+          },
+          "failure_rate": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "ai_suggestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "impact": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "user_patterns": {
+      "type": "object",
+      "description": "Detected user behavior patterns"
+    },
+    "last_analyzed": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "workflow_id"
+  ]
+}

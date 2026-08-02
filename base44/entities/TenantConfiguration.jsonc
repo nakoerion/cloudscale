@@ -1,0 +1,43 @@
+{
+  "name": "TenantConfiguration",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Reference to tenant"
+    },
+    "config_key": {
+      "type": "string",
+      "description": "Configuration key"
+    },
+    "config_value": {
+      "type": "string",
+      "description": "Configuration value (JSON string)"
+    },
+    "config_type": {
+      "type": "string",
+      "enum": [
+        "feature_flag",
+        "ui_customization",
+        "integration",
+        "api_limit",
+        "security"
+      ],
+      "default": "feature_flag"
+    },
+    "is_encrypted": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_inheritable": {
+      "type": "boolean",
+      "default": true,
+      "description": "Can child tenants inherit this config"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "config_key",
+    "config_value"
+  ]
+}

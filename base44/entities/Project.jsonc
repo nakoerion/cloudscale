@@ -1,0 +1,128 @@
+{
+  "name": "Project",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Project name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Project description"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "no-code",
+        "low-code",
+        "full-code",
+        "hybrid"
+      ],
+      "description": "Project type"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "development",
+        "staging",
+        "production",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "cloud_provider": {
+      "type": "string",
+      "enum": [
+        "none",
+        "aws",
+        "azure",
+        "gcp",
+        "alibaba",
+        "ibm",
+        "oracle",
+        "multi-cloud"
+      ],
+      "default": "none"
+    },
+    "deployment_region": {
+      "type": "string",
+      "description": "Deployment region"
+    },
+    "tech_stack": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Technologies used"
+    },
+    "environments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "team_members": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Team member emails"
+    },
+    "repository_url": {
+      "type": "string"
+    },
+    "last_deployed": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "uptime": {
+          "type": "number"
+        },
+        "requests_today": {
+          "type": "number"
+        },
+        "avg_response_time": {
+          "type": "number"
+        },
+        "error_rate": {
+          "type": "number"
+        }
+      }
+    },
+    "sla_tier": {
+      "type": "string",
+      "enum": [
+        "basic",
+        "professional",
+        "enterprise"
+      ],
+      "default": "basic"
+    },
+    "monthly_cost": {
+      "type": "number",
+      "default": 0
+    },
+    "thumbnail": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "type"
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "name": "IaCDeployment",
+  "type": "object",
+  "properties": {
+    "template_id": {
+      "type": "string",
+      "description": "IaC template ID"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project ID"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "planning",
+        "applying",
+        "completed",
+        "failed",
+        "destroying"
+      ],
+      "default": "pending"
+    },
+    "provider": {
+      "type": "string",
+      "enum": [
+        "aws",
+        "azure",
+        "gcp"
+      ],
+      "description": "Cloud provider"
+    },
+    "region": {
+      "type": "string",
+      "description": "Deployment region"
+    },
+    "variables_used": {
+      "type": "object",
+      "description": "Variables used in deployment"
+    },
+    "resources_created": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Created resources"
+    },
+    "output": {
+      "type": "string",
+      "description": "Deployment output/logs"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error message if failed"
+    },
+    "cost_estimate": {
+      "type": "number",
+      "description": "Estimated monthly cost"
+    },
+    "ci_cd_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Auto-deploy on Git commits"
+    },
+    "git_repository": {
+      "type": "string",
+      "description": "Git repository URL"
+    },
+    "git_branch": {
+      "type": "string",
+      "description": "Target branch for auto-deployment"
+    },
+    "ci_provider": {
+      "type": "string",
+      "enum": [
+        "github-actions",
+        "gitlab-ci",
+        "none"
+      ],
+      "default": "none",
+      "description": "CI/CD provider"
+    },
+    "last_commit_sha": {
+      "type": "string",
+      "description": "Last deployed commit SHA"
+    },
+    "last_commit_message": {
+      "type": "string",
+      "description": "Last commit message"
+    },
+    "workflow_run_id": {
+      "type": "string",
+      "description": "CI/CD workflow run ID"
+    },
+    "workflow_url": {
+      "type": "string",
+      "description": "Link to CI/CD workflow"
+    },
+    "is_multi_cloud": {
+      "type": "boolean",
+      "default": false,
+      "description": "Multi-cloud deployment"
+    },
+    "cloud_resources": {
+      "type": "object",
+      "properties": {
+        "aws": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "resources": {
+              "type": "array"
+            },
+            "cost": {
+              "type": "number"
+            },
+            "region": {
+              "type": "string"
+            }
+          }
+        },
+        "azure": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "resources": {
+              "type": "array"
+            },
+            "cost": {
+              "type": "number"
+            },
+            "region": {
+              "type": "string"
+            }
+          }
+        },
+        "gcp": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "resources": {
+              "type": "array"
+            },
+            "cost": {
+              "type": "number"
+            },
+            "region": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Resources per cloud provider"
+    }
+  },
+  "required": [
+    "template_id",
+    "provider",
+    "region"
+  ]
+}

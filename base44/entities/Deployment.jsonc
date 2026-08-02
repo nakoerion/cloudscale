@@ -1,0 +1,82 @@
+{
+  "name": "Deployment",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "development",
+        "staging",
+        "production"
+      ]
+    },
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "success",
+        "failed",
+        "rolled_back"
+      ],
+      "default": "pending"
+    },
+    "cloud_provider": {
+      "type": "string",
+      "enum": [
+        "aws",
+        "azure",
+        "gcp",
+        "alibaba",
+        "ibm",
+        "oracle"
+      ]
+    },
+    "region": {
+      "type": "string"
+    },
+    "container_image": {
+      "type": "string"
+    },
+    "replicas": {
+      "type": "number",
+      "default": 1
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "cpu": {
+          "type": "string"
+        },
+        "memory": {
+          "type": "string"
+        },
+        "storage": {
+          "type": "string"
+        }
+      }
+    },
+    "deployed_by": {
+      "type": "string"
+    },
+    "commit_sha": {
+      "type": "string"
+    },
+    "rollback_version": {
+      "type": "string"
+    },
+    "logs_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "project_id",
+    "environment"
+  ]
+}
